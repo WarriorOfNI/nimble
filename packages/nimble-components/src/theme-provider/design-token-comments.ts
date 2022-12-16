@@ -241,5 +241,17 @@ export const comments: { readonly [key in TokenName]: string | null } = {
     errorTextFontLineHeight:
         'Font line height for the "Error_LightUi" base token',
     errorTextFallbackFontFamily:
-        'Fallback font family for the "Error_LightUi" base token'
+        'Fallback font family for the "Error_LightUi" base token',
+    tableHeaderFont:
+        'Font shorthand for the "Grid_Header" base token',
+    tableHeaderFontColor: 'Font size for the "Grid_Header" base token',
+    tableHeaderDisabledFontColor:
+        'Disabled font color for the "Grid_Header" base  token',
+    tableHeaderFontFamily: 'Font family for the "Grid_Header" base token',
+    tableHeaderFontSize: 'Font size for the "Grid_Header" base token',
+    tableHeaderFontWeight: 'Font weight for the "Grid_Header" base token',
+    tableHeaderFontLineHeight:
+        'Font line height for the "Grid_Header" base token',
+    tableHeaderFallbackFontFamily:
+        'Fallback font family for the "Grid_Header" base token'
 };

@@ -86,7 +86,10 @@ import {
     Information100LightUi,
     Information100DarkUi,
     DigitalGreenDark,
-    PowerGreen
+    PowerGreen,
+    GridHeaderFamily,
+    GridHeaderWeight,
+    GridHeaderSize
 } from '@ni/nimble-tokens/dist/styledictionary/js/tokens';
 import {
     modalBackdropColorThemeColorStatic,
@@ -597,6 +600,25 @@ export const [
     'sans-serif'
 );
 
+export const [
+    tableHeaderFont,
+    tableHeaderFontColor,
+    tableHeaderDisabledFontColor,
+    tableHeaderFontFamily,
+    tableHeaderFontWeight,
+    tableHeaderFontSize,
+    tableHeaderFontLineHeight,
+    tableHeaderFallbackFontFamily
+] = createFontTokens(
+    tokenNames.tableHeaderFont,
+    (element: HTMLElement) => hexToRgbaCssColor(getDefaultFontColorForTheme(element), 0.6),
+    (element: HTMLElement) => hexToRgbaCssColor(getDefaultFontColorForTheme(element), 0.3),
+    GridHeaderFamily,
+    GridHeaderWeight,
+    GridHeaderSize,
+    TooltipCaptionLineHeight,
+    'sans-serif'
+);
 // Font Transform Tokens
 export const groupHeaderTextTransform = DesignToken.create<string>(
     styleNameFromTokenName(tokenNames.groupHeaderTextTransform)
