@@ -9,28 +9,24 @@ import { TablePageObject } from './table.pageobject';
 
 interface SimpleTableRecord extends TableRecord {
     stringData: string;
-    numericData: string;
-    booleanData: string;
+    numericData: number;
     moreStringData: string;
 }
 
 const simpleTableData = [
     {
         stringData: 'string 1',
-        numericData: '8',
-        booleanData: 'true',
+        numericData: 8,
         moreStringData: 'foo'
     },
     {
         stringData: 'hello world',
-        numericData: '0',
-        booleanData: 'true',
+        numericData: 0,
         moreStringData: 'foo'
     },
     {
-        stringData: 'string 1',
-        numericData: '-9',
-        booleanData: 'false',
+        stringData: 'another string',
+        numericData: -9,
         moreStringData: 'foo'
     }
 ] as const;
@@ -42,8 +38,6 @@ async function setup(): Promise<Fixture<Table<SimpleTableRecord>>> {
     return fixture<Table<SimpleTableRecord>>(
         html`<nimble-table>
                 <${tableColumnText} field-name="stringData">stringData</${tableColumnText}>
-                <${tableColumnText} field-name="numericData">numericData</${tableColumnText}>
-                <${tableColumnText} field-name="booleanData">booleanData</${tableColumnText}>
             </nimble-table>`
     );
 }
@@ -154,8 +148,7 @@ describe('Table', () => {
             ...simpleTableData,
             {
                 stringData: 'a new string',
-                numericData: '-9',
-                booleanData: 'false',
+                numericData: -9,
                 moreStringData: 'foo'
             }
         ];
@@ -208,7 +201,7 @@ describe('Table', () => {
 
         element.appendChild(dateColumn);
         await waitForUpdatesAsync();
-        expect(element.columns[3]).toBe(dateColumn);
+        expect(element.columns[element.columns.length - 1]).toBe(dateColumn);
 
         verifyRenderedData();
     });
@@ -226,5 +219,84 @@ describe('Table', () => {
         expect(element.columns[0]).toBe(dateColumn);
 
         verifyRenderedData();
+    });
+
+    describe('ID validation', () => {
+        it('setting valid field for ID is valid and renders rows', async () => {
+            const data = [...simpleTableData];
+            element.data = data;
+            element.idFieldName = 'stringData';
+            await connect();
+            await waitForUpdatesAsync();
+
+            verifyRenderedData();
+            expect(element.checkValidity()).toBeTrue();
+            expect(element.validity.duplicateRowId).toBeFalse();
+            expect(element.validity.invalidRowId).toBeFalse();
+            expect(element.validity.missingRowId).toBeFalse();
+        });
+
+        it('setting invalid field for ID  is invalid and renders no rows', async () => {
+            const data = [...simpleTableData];
+            element.data = data;
+            element.idFieldName = 'numericData';
+            await connect();
+            await waitForUpdatesAsync();
+
+            expect(pageObject.getRenderedRowCount()).toBe(0);
+            expect(element.checkValidity()).toBeFalse();
+            expect(element.validity.duplicateRowId).toBeFalse();
+            expect(element.validity.invalidRowId).toBeTrue();
+            expect(element.validity.missingRowId).toBeFalse();
+        });
+
+        it('setting ID field name to undefined makes an invalid table valid', async () => {
+            const data = [...simpleTableData];
+            element.data = data;
+            element.idFieldName = 'missingFieldName';
+            await connect();
+
+            expect(pageObject.getRenderedRowCount()).toBe(0);
+            expect(element.checkValidity()).toBeFalse();
+
+            element.idFieldName = undefined;
+            await waitForUpdatesAsync();
+
+            verifyRenderedData();
+            expect(element.checkValidity()).toBeTrue();
+        });
+
+        it('setting a valid ID field name makes an invalid table valid', async () => {
+            const data = [...simpleTableData];
+            element.data = data;
+            element.idFieldName = 'missingFieldName';
+            await connect();
+
+            expect(pageObject.getRenderedRowCount()).toBe(0);
+            expect(element.checkValidity()).toBeFalse();
+
+            element.idFieldName = 'stringData';
+            await waitForUpdatesAsync();
+
+            verifyRenderedData();
+            expect(element.checkValidity()).toBeTrue();
+        });
+
+        it('setting invalid ID field name on valid table makes it invalid', async () => {
+            const data = [...simpleTableData];
+            element.data = data;
+            element.idFieldName = 'stringData';
+            await connect();
+            await waitForUpdatesAsync();
+
+            verifyRenderedData();
+            expect(element.checkValidity()).toBeTrue();
+
+            element.idFieldName = 'missingFieldName';
+            await waitForUpdatesAsync();
+
+            expect(pageObject.getRenderedRowCount()).toBe(0);
+            expect(element.checkValidity()).toBeFalse();
+        });
     });
 });
