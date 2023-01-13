@@ -1,14 +1,23 @@
-import type { ElementStyles, ViewTemplate } from '@microsoft/fast-element';
+import { attr, ElementStyles, ViewTemplate } from '@microsoft/fast-element';
 import { FoundationElement } from '@microsoft/fast-foundation';
-import type { TableCellState, TableRecord } from '../../table/types';
+import type { ColumnConfig, TableCellState, TableRecord } from '../../table/types';
 
 /**
  * The base class for table columns
  */
 export abstract class TableColumn<
     TCellRecord extends TableRecord = TableRecord,
-    TColumnConfig = unknown
+    TColumnConfig extends ColumnConfig = ColumnConfig
 > extends FoundationElement {
+    @attr
+    public size?: number;
+
+    @attr({ attribute: 'min-size' })
+    public minSize?: number;
+
+    @attr({ attribute: 'max-size' })
+    public maxSize?: number;
+
     /**
      * The template to use to render the cell content for the column
      */

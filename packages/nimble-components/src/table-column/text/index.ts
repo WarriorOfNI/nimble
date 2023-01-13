@@ -1,6 +1,6 @@
 import { attr } from '@microsoft/fast-element';
 import { DesignSystem } from '@microsoft/fast-foundation';
-import type { StringField } from '../../table/types';
+import type { ColumnConfig, StringField } from '../../table/types';
 import { TableColumn } from '../base';
 import { styles } from '../base/styles';
 import { template } from '../base/template';
@@ -8,7 +8,7 @@ import { cellStyles } from './styles';
 import { cellTemplate } from './template';
 
 export type TableColumnTextCellRecord = StringField<'value'>;
-export interface TableColumnTextColumnConfig {
+export interface TableColumnTextColumnConfig extends ColumnConfig {
     placeholder: string;
 }
 

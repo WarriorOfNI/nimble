@@ -29,9 +29,14 @@ export type StringField<FieldName extends string> = {
     [name in FieldName]: string | null | undefined;
 };
 
+export interface ColumnConfig {
+    isFixed?: boolean;
+    size?: number;
+}
+
 export interface TableCellState<
     TCellRecord extends TableRecord,
-    TColumnConfig = unknown
+    TColumnConfig extends ColumnConfig
 > {
     data: TCellRecord;
     columnConfig: TColumnConfig;
