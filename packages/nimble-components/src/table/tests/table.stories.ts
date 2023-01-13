@@ -94,9 +94,9 @@ const metadata: Meta<TableArgs> = {
             experimental. It is not recommended for application use.
         </div>
         <nimble-table :data=${x => dataSets[x.data]} id-field-name=${x => dataSetIdFieldNames[x.data]}>
-            <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
+            <nimble-table-column-text field-name="firstName" placeholder="no value" grid-size=".5">First Name</nimble-table-column-text>
             <nimble-table-column-text field-name="lastName" placeholder="no value">Last Name</nimble-table-column-text>
-            <nimble-table-column-text field-name="favoriteColor" placeholder="no value">Favorite Color</nimble-table-column-text>
+            <nimble-table-column-text field-name="favoriteColor" placeholder="no value" fixed-size="100">Favorite Color</nimble-table-column-text>
             <nimble-table-column-text field-name="quote" placeholder="no value">Quote</nimble-table-column-text>
         </nimble-table>
         <style class="code-hide">

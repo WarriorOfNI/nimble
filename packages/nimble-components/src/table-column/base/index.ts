@@ -1,4 +1,4 @@
-import { attr, ElementStyles, ViewTemplate } from '@microsoft/fast-element';
+import { attr, ElementStyles, nullableNumberConverter, ViewTemplate } from '@microsoft/fast-element';
 import { FoundationElement } from '@microsoft/fast-foundation';
 import type { ColumnConfig, TableCellState, TableRecord } from '../../table/types';
 
@@ -9,8 +9,11 @@ export abstract class TableColumn<
     TCellRecord extends TableRecord = TableRecord,
     TColumnConfig extends ColumnConfig = ColumnConfig
 > extends FoundationElement {
-    @attr
-    public size?: number;
+    @attr({ attribute: 'fixed-size', converter: nullableNumberConverter })
+    public fixedSize?: number;
+
+    @attr({ attribute: 'grid-size', converter: nullableNumberConverter })
+    public gridSize = 1;
 
     @attr({ attribute: 'min-size' })
     public minSize?: number;

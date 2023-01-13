@@ -35,8 +35,8 @@ export interface ColumnConfig {
 }
 
 export interface TableCellState<
-    TCellRecord extends TableRecord,
-    TColumnConfig extends ColumnConfig
+    TCellRecord extends TableRecord = TableRecord,
+    TColumnConfig extends ColumnConfig = ColumnConfig
 > {
     data: TCellRecord;
     columnConfig: TColumnConfig;

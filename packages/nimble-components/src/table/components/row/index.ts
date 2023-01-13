@@ -2,7 +2,7 @@ import { observable } from '@microsoft/fast-element';
 import { DesignSystem, FoundationElement } from '@microsoft/fast-foundation';
 import { styles } from './styles';
 import { template } from './template';
-import type { TableCellState, TableRecord } from '../../types';
+import type { TableCellState, TableRecord, TableRowState } from '../../types';
 import type { TableColumn } from '../../../table-column/base';
 
 declare global {
@@ -24,7 +24,7 @@ export class TableRow<
     @observable
     public columns: TableColumn[] = [];
 
-    public getCellState(column: TableColumn): TableCellState<TableRecord> {
+    public getCellState(column: TableColumn): TableCellState {
         const fieldNames = column.getRecordFieldNames();
         if (this.hasValidFieldNames(fieldNames) && this.data) {
             const cellDataValues = fieldNames.map(field => this.data![field]);
@@ -35,7 +35,7 @@ export class TableRow<
                 ])
             );
             const columnConfig = column.getColumnConfig?.() ?? {};
-            const cellState: TableCellState<TableRecord> = {
+            const cellState: TableCellState = {
                 data: cellData,
                 columnConfig
             };
@@ -43,6 +43,17 @@ export class TableRow<
         }
 
         return { data: {}, columnConfig: {} };
+    }
+
+    public getTemplateColumns(): string {
+        return this.columns.reduce((accumulator: string, currentValue) => {
+            const gap = accumulator === '' ? '' : ' ';
+            if (currentValue.fixedSize) {
+                return `${accumulator}${gap}${currentValue.fixedSize}px`;
+            }
+
+            return `${accumulator}${gap}${currentValue.gridSize}fr`;
+        }, '');
     }
 
     private hasValidFieldNames(keys: (string | undefined)[]): keys is string[] {
