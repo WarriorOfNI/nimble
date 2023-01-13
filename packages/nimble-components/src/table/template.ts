@@ -38,11 +38,14 @@ export const template = html<Table>`
             </div>
             <div class="table-viewport" role="rowgroup">
             ${when(x => x.columns.length > 0, html<Table>`
-                ${repeat(x => x.tableData, html<TableRowState>`
+                ${repeat(x => x.tableData, html<TableRowState, Table>`
                     <${DesignSystem.tagFor(TableRow)}
+                        row-id="${x => x.id}"
                         :data="${x => x.data}"
-                        :columns="${(_, c) => (c.parent as Table).columns}"
+                        :columns="${(_, c) => c.parent.columns}"
+                        @row-action-menu-opening="${(_, c) => c.parent.onRowActionMenuOpening(c.event as CustomEvent)}"
                     >
+                    <slot name="${(x, c) => ((c.parent.openActionMenuRowId === x.id) ? 'actionMenu' : 'unused_actionMenu')}" slot="rowActionMenu"></slot>
                     </${DesignSystem.tagFor(TableRow)}>
                 `)}
             `)}

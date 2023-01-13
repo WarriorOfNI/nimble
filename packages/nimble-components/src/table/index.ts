@@ -14,6 +14,9 @@ import { TableValidator } from './models/table-validator';
 import { styles } from './styles';
 import { template } from './template';
 import type { TableRecord, TableRowState, TableValidity } from './types';
+import type { ActionMenuOpeningEventDetail } from './components/row';
+
+export { ActionMenuOpeningEventDetail };
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -39,10 +42,11 @@ export class Table<
     @observable
     public tableData: TableRowState<TData>[] = [];
 
-    // TODO: Temporarily expose the columns as a string array. This will ultimately be
-    // column definitions provided by slotted elements.
     @observable
     public readonly columns: TableColumn[] = [];
+
+    @observable
+    public openActionMenuRowId?: string;
 
     public get validity(): TableValidity {
         return this.tableValidator.getValidity();
@@ -63,7 +67,6 @@ export class Table<
                 if (this.idFieldName) {
                     return record[this.idFieldName] as string;
                 }
-                // Return a falsey value to use the default ID from TanStack.
                 return '';
             },
             columns: [],
@@ -102,6 +105,12 @@ export class Table<
         return this.tableValidator.isValid();
     }
 
+    public onRowActionMenuOpening(event: CustomEvent): void {
+        const eventDetail = event.detail as ActionMenuOpeningEventDetail;
+        this.openActionMenuRowId = eventDetail.rowId;
+        this.$emit('action-menu-opening', eventDetail);
+    }
+
     private trySetData(newData: TData[]): void {
         const areIdsValid = this.tableValidator.validateDataIds(
             newData,
@@ -117,7 +126,7 @@ export class Table<
     private refreshRows(): void {
         const rows = this.table.getRowModel().rows;
         this.tableData = rows.map(row => {
-            const rowState: TableRowState<TData> = { data: row.original };
+            const rowState: TableRowState<TData> = { data: row.original, id: row.id };
             return rowState;
         });
     }

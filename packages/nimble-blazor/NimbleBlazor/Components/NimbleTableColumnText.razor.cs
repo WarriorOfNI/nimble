@@ -19,5 +19,11 @@ public partial class NimbleTableColumnText : ComponentBase
     public string? Placeholder { get; set; }
 
     [Parameter]
+    public bool ShowActionMenu { get; set; }
+
+    [Parameter]
+    public string? ColumnId { get; set; }
+
+    [Parameter]
     public RenderFragment? ChildContent { get; set; }
 }

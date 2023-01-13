@@ -12,6 +12,11 @@ interface SimpleTableRecord extends TableRecord {
     stringValue2: string;
 }
 
+interface MenuItemData {
+    label: string;
+    disabled: boolean;
+}
+
 @Component({
     selector: 'example-customapp',
     templateUrl: './customapp.component.html',
@@ -41,6 +46,8 @@ export class CustomAppComponent {
         { stringValue1: 're', stringValue2: 'bar' },
         { stringValue1: 'last row', stringValue2: 'yay!' }
     ];
+
+    public menuItems: MenuItemData[] = [];
 
     @ViewChild('dialog', { read: NimbleDialogDirective }) private readonly dialog: NimbleDialogDirective<string>;
     @ViewChild('drawer', { read: NimbleDrawerDirective }) private readonly drawer: NimbleDrawerDirective<string>;
@@ -85,5 +92,31 @@ export class CustomAppComponent {
             stringValue1: `new string ${this.tableData.length}`,
             stringValue2: `bar ${this.tableData.length}`
         }];
+    }
+
+    public onActionMenuOpening(e: Event): void {
+        const customEvent = e as CustomEvent;
+        if (!customEvent.detail) {
+            return;
+        }
+
+        const detail = customEvent.detail as { rowId: string, columnId: string };
+
+        let disabled = true;
+        if (detail.columnId === 'sv1') {
+            disabled = false;
+        }
+
+        const menuItems: MenuItemData[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const _ of detail.rowId) {
+            menuItems.push({
+                label: `${detail.rowId} - cool item`,
+                disabled
+            });
+
+            disabled = !disabled;
+        }
+        this.menuItems = menuItems;
     }
 }

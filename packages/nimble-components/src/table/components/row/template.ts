@@ -9,11 +9,15 @@ export const template = html<TableRow>`
     <template role="row">
         ${repeat(x => x.columns, html<TableColumn, TableRow>`
             <${DesignSystem.tagFor(TableCell)}
-                class="cell"
+                class="cell ${(x, c) => (c.parent.menuIsOpen && (c.parent.currentActionMenuColumn === x) ? 'menu-open' : '')}"
+                ?action-menu="${x => x.showActionMenu}"
                 :cellTemplate="${x => x.cellTemplate}"
                 :cellStyles="${x => x.cellStyles}"
                 :data="${(x, c) => c.parent.getCellState(x)}"
+                @cell-action-menu-opening="${(x, c) => c.parent.onCellActionMenuOpening(x)}"
+                @cell-action-menu-open-change="${(_, c) => c.parent.onCellActionMenuOpenChange(c.event as CustomEvent)}"
             >
+                <slot name="${(x, c) => ((c.parent.currentActionMenuColumn === x) ? 'rowActionMenu' : 'unused_rowActionMenu')}" slot="cellActionMenu"></slot>
             </${DesignSystem.tagFor(TableCell)}>
         `)}
     </template>

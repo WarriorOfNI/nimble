@@ -16,6 +16,8 @@ namespace Demo.Shared.Pages
         private NimbleDrawer<DialogResult>? _drawer;
         private string? DrawerClosedReason { get; set; }
         private string? SelectedRadio { get; set; } = "2";
+        private NimbleTable<Person>? _table;
+        private MenuItemData[] MenuItems { get; set; } = new MenuItemData[] { new MenuItemData("hello", false), new MenuItemData("world", false), new MenuItemData("foo", true) };
 
         [NotNull]
         public IEnumerable<Person> TableData { get; set; } = Enumerable.Empty<Person>();
@@ -55,14 +57,29 @@ namespace Demo.Shared.Pages
             await _drawer!.CloseAsync(reason);
         }
 
+        private void MyHandler(Tuple<string?, string?> tuple)
+        {
+            if (string.IsNullOrEmpty(tuple.Item1) || string.IsNullOrEmpty(tuple.Item2))
+            {
+                return;
+            }
+
+            var updatedItems = new MenuItemData[3];
+            updatedItems[0] = new MenuItemData("row: " + tuple.Item1, false);
+            updatedItems[1] = new MenuItemData("column: " + tuple.Item2, false);
+            updatedItems[2] = new MenuItemData("foobar", true);
+            MenuItems = updatedItems;
+        }
+
         public void UpdateTableData(int numberOfRows)
         {
-            var tableData = new Person[numberOfRows + 1];
+            // var tableData = new Person[numberOfRows + 1];
+            var tableData = new Person[numberOfRows];
             for (int i = 0; i < numberOfRows; i++)
             {
                 tableData[i] = new Person(Faker.Name.First(), Faker.Name.Last());
             }
-            tableData[numberOfRows] = new Person(null, null);
+            // tableData[numberOfRows] = new Person(null, null);
 
             TableData = tableData;
         }
@@ -84,5 +101,17 @@ namespace Demo.Shared.Pages
     {
         OK,
         Cancel
+    }
+
+    public class MenuItemData
+    {
+        public MenuItemData(string label, bool disabled)
+        {
+            Label = label;
+            Disabled = disabled;
+        }
+
+        public string Label { get; set; }
+        public bool Disabled { get; set; }
     }
 }

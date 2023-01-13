@@ -1,3 +1,4 @@
+import { attr } from '@microsoft/fast-element';
 import type { ElementStyles, ViewTemplate } from '@microsoft/fast-element';
 import { FoundationElement } from '@microsoft/fast-foundation';
 import type { TableCellState, TableRecord } from '../../table/types';
@@ -9,6 +10,12 @@ export abstract class TableColumn<
     TCellRecord extends TableRecord = TableRecord,
     TColumnConfig = unknown
 > extends FoundationElement {
+    @attr({ attribute: 'column-id' })
+    public columnId?: string;
+
+    @attr({ attribute: 'action-menu', mode: 'boolean' })
+    public showActionMenu = false;
+
     /**
      * The template to use to render the cell content for the column
      */

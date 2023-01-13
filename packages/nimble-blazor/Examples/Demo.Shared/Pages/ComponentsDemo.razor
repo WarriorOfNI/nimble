@@ -197,9 +197,16 @@
         </div>
         <div class="sub-container">
             <div class="container-label">Table</div>
-            <NimbleTable @bind-Data="TableData" class="table">
-                <NimbleTableColumnText FieldName="FirstName" Placeholder="no value">First Name</NimbleTableColumnText>
-                <NimbleTableColumnText FieldName="LastName" Placeholder="no value">Last Name</NimbleTableColumnText>
+            <NimbleTable @ref="_table" @bind-Data="TableData" IdFieldName="FirstName" class="table" ActionMenuOpening="MyHandler">
+                <NimbleTableColumnText FieldName="FirstName" Placeholder="no value" ShowActionMenu="true" ColumnId="first">First Name</NimbleTableColumnText>
+                <NimbleTableColumnText FieldName="LastName" Placeholder="no value" ShowActionMenu="true" ColumnId="last">Last Name</NimbleTableColumnText>
+
+                <NimbleMenu slot="actionMenu">
+                    @foreach (var menuItem in MenuItems)
+                    {
+                        <NimbleMenuItem Disabled="menuItem.Disabled">@menuItem.Label</NimbleMenuItem>
+                    }
+                </NimbleMenu>
             </NimbleTable>
         </div>
         <NimbleButton class="table-update-button" @onclick=@(_ => UpdateTableData(100))>Update Data</NimbleButton>

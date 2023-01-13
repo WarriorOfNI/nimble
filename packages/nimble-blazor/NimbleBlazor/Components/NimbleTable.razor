@@ -1,5 +1,10 @@
 ﻿@namespace NimbleBlazor
 @typeparam TData
-<nimble-table @ref="_table" @attributes="AdditionalAttributes">
+<nimble-table
+    @ref="_table"
+    @attributes="AdditionalAttributes"
+    id-field-name="@IdFieldName"
+    @onnimbleactionmenuopening="(__value) => FireOpeningEvent(__value.RowId, __value.ColumnId)"
+>
     @ChildContent
 </nimble-table>

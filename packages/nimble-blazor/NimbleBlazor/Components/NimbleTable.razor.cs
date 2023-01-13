@@ -17,8 +17,25 @@ public partial class NimbleTable<TData> : ComponentBase
     private IEnumerable<TData> _data = Enumerable.Empty<TData>();
     internal static string SetTableDataMethodName = "NimbleBlazor.Table.setData";
 
+    /// <summary>
+    /// Gets or sets a callback that's invoked when the activeid changes
+    /// </summary>
+    [Parameter] public EventCallback<Tuple<string?, string?>> ActionMenuOpening { get; set; }
+
+    /// <summary>
+    /// Called when activeid changes on the web component
+    /// </summary>
+    /// <param name="value">New value of activeid</param>
+    protected async void FireOpeningEvent(string? rowId, string? columnId)
+    {
+        await ActionMenuOpening.InvokeAsync(new Tuple<string?, string?>(rowId, columnId));
+    }
+
     [Inject]
     private IJSRuntime? JSRuntime { get; set; }
+
+    [Parameter]
+    public string? IdFieldName { get; set; }
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }

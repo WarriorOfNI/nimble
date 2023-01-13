@@ -1,4 +1,5 @@
 import {
+    attr,
     defaultExecutionContext,
     ElementStyles,
     HTMLView,
@@ -6,6 +7,7 @@ import {
     ViewTemplate
 } from '@microsoft/fast-element';
 import { DesignSystem, FoundationElement } from '@microsoft/fast-foundation';
+import type { MenuButton } from '../../../menu-button';
 import type { TableCellState, TableRecord } from '../../types';
 import { styles } from './styles';
 import { template } from './template';
@@ -23,6 +25,9 @@ declare global {
 export class TableCell<
     TCellRecord extends TableRecord = TableRecord
 > extends FoundationElement {
+    @attr({ attribute: 'action-menu', mode: 'boolean' })
+    public showActionMenu = false;
+
     @observable
     public data?: TableCellState<TCellRecord>;
 
@@ -31,6 +36,8 @@ export class TableCell<
 
     @observable
     public cellStyles?: ElementStyles;
+
+    public menuIsOpen = false;
 
     /**
      * @internal
@@ -45,6 +52,16 @@ export class TableCell<
             this.data,
             this.cellContentContainer
         );
+    }
+
+    public onMenuOpening(): void {
+        this.$emit('cell-action-menu-opening');
+    }
+
+    public onMenuOpenChange(event: Event): void {
+        const menu = event.target as MenuButton;
+        this.menuIsOpen = menu.open;
+        this.$emit('cell-action-menu-open-change', this);
     }
 
     protected dataChanged(): void {

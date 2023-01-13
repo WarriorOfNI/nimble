@@ -176,9 +176,15 @@
         </div>
         <div class="sub-container">
             <div class="container-label">Table</div>
-            <nimble-table [data]="tableData">
-                <nimble-table-column-text field-name="stringValue1">String 1</nimble-table-column-text>
-                <nimble-table-column-text field-name="stringValue2">String 2</nimble-table-column-text>
+            <nimble-table [data]="tableData" id-field-name="stringValue1" (action-menu-opening)="onActionMenuOpening($event)">
+                <nimble-table-column-text field-name="stringValue1" action-menu column-id="sv1">String 1</nimble-table-column-text>
+                <nimble-table-column-text field-name="stringValue2" action-menu column-id="sv2">String 2</nimble-table-column-text>
+
+                <nimble-menu slot="actionMenu">
+                    <nimble-menu-item *ngFor="let menuItem of menuItems" [disabled]="menuItem.disabled">
+                        {{ menuItem.label }}
+                    </nimble-menu-item>
+                </nimble-menu>
             </nimble-table>
             <nimble-button class="add-table-row-button" (click)="onAddTableRow()">Add row</nimble-button>
         </div>

@@ -39,6 +39,23 @@ export function afterStarted(Blazor) {
             };
         }
     });
+
+    Blazor.registerCustomEventType('nimbleactionmenuopening', {
+        browserEventName: 'action-menu-opening',
+        createEventArgs: event => {
+            if (event.detail) {
+                return {
+                    rowId: event.detail.rowId,
+                    columnId: event.detail.columnId
+                };
+            }
+
+            return {
+                rowId: '',
+                columnId: ''
+            };
+        }
+    })
 }
 
 window.NimbleBlazor = {
