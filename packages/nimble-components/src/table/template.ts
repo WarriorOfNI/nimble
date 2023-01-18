@@ -36,21 +36,30 @@ export const template = html<Table>`
                     `)}
                 </div>
             </div>
+
             <div class="table-viewport" role="rowgroup">
             ${when(x => x.columns.length > 0, html<Table>`
                 ${repeat(x => x.tableData, html<TableRowState, Table>`
                     <${DesignSystem.tagFor(TableRow)}
-                        row-id="${x => x.id}"
+                        record-id="${x => x.id}"
                         :data="${x => x.data}"
                         :columns="${(_, c) => c.parent.columns}"
+                        :actionMenuSlotNames="${(_, c) => c.parent.actionMenuSlotNames}"
                         @row-action-menu-opening="${(_, c) => c.parent.onRowActionMenuOpening(c.event as CustomEvent)}"
                     >
-                    <slot name="${(x, c) => ((c.parent.openActionMenuRowId === x.id) ? 'actionMenu' : 'unused_actionMenu')}" slot="rowActionMenu"></slot>
+                        ${repeat((_, c) => (c.parent as Table).actionMenuSlotNames, html<string, Table>`
+                            <slot
+                                name="${(x, c) => ((c.parentContext.parent.openActionMenuRowId === c.parent.id) ? x : 'nimble-table-empty-action-menu')}"
+                                slot="${x => `row-action-menu-${x}`}">
+                            </slot>
+                        `)}
+                        <!-- <slot name="${(x, c) => ((c.parent.openActionMenuRowId === x.id) ? 'actionMenu' : 'unused_actionMenu')}" slot="rowActionMenu"></slot> -->
                     </${DesignSystem.tagFor(TableRow)}>
                 `)}
             `)}
             </div>
         </div>
+
         <slot ${slotted({ property: 'columns', filter: isTableColumn() })}></slot>
     </template>
 `;

@@ -1,4 +1,4 @@
-import { html, repeat } from '@microsoft/fast-element';
+import { html, repeat, when } from '@microsoft/fast-element';
 import { DesignSystem } from '@microsoft/fast-foundation';
 import type { TableRow } from '.';
 import { TableCell } from '../cell';
@@ -10,14 +10,19 @@ export const template = html<TableRow>`
         ${repeat(x => x.columns, html<TableColumn, TableRow>`
             <${DesignSystem.tagFor(TableCell)}
                 class="cell ${(x, c) => (c.parent.menuIsOpen && (c.parent.currentActionMenuColumn === x) ? 'menu-open' : '')}"
-                ?action-menu="${x => x.showActionMenu}"
+                ?action-menu="${x => !!x.actionMenu}"
                 :cellTemplate="${x => x.cellTemplate}"
                 :cellStyles="${x => x.cellStyles}"
                 :data="${(x, c) => c.parent.getCellState(x)}"
                 @cell-action-menu-opening="${(x, c) => c.parent.onCellActionMenuOpening(x)}"
                 @cell-action-menu-open-change="${(_, c) => c.parent.onCellActionMenuOpenChange(c.event as CustomEvent)}"
             >
-                <slot name="${(x, c) => ((c.parent.currentActionMenuColumn === x) ? 'rowActionMenu' : 'unused_rowActionMenu')}" slot="cellActionMenu"></slot>
+                ${when((x, c) => (c.parent.currentActionMenuColumn === x) && !!x.actionMenu, html<TableColumn, TableRow>`
+                    <slot
+                        name="${(x, c) => ((c.parent.currentActionMenuColumn === x) ? `row-action-menu-${x.actionMenu!}` : 'nimble-unused-action-menu')}"
+                        slot="cellActionMenu"
+                    ></slot>
+                `)}
             </${DesignSystem.tagFor(TableCell)}>
         `)}
     </template>

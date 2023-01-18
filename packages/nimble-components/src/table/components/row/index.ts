@@ -34,14 +34,17 @@ export class TableRow<
     @observable
     public columns: TableColumn[] = [];
 
-    @attr({ attribute: 'row-id' })
-    public rowId = '';
+    @attr({ attribute: 'record-id' })
+    public recordId = '';
 
     @observable
     public currentActionMenuColumn?: TableColumn;
 
     @observable
     public menuIsOpen = false;
+
+    @observable
+    public actionMenuSlotNames: string[] = [];
 
     public getCellState(column: TableColumn): TableCellState<TableRecord> {
         const fieldNames = column.getRecordFieldNames();
@@ -67,7 +70,7 @@ export class TableRow<
     public onCellActionMenuOpening(column: TableColumn): void {
         this.currentActionMenuColumn = column;
         const detail: ActionMenuOpeningEventDetail = {
-            rowId: this.rowId,
+            rowId: this.recordId,
             columnId: column.columnId
         };
         this.$emit('row-action-menu-opening', detail);

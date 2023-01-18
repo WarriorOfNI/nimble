@@ -46,7 +46,10 @@ export class Table<
     public readonly columns: TableColumn[] = [];
 
     @observable
-    public openActionMenuRowId?: string;
+    public actionMenuSlotNames: string[] = [];
+
+    @observable
+    public openActionMenuRowId?: string = 'Ned';
 
     public get validity(): TableValidity {
         return this.tableValidator.getValidity();
@@ -76,6 +79,15 @@ export class Table<
         };
         this.table = tanStackCreateTable(this.options);
         this.tableInitialized = true;
+    }
+
+    private columnsChanged(
+        _prev: TableColumn[] | undefined,
+        _next: TableColumn[] | undefined
+    ): void {
+        this.actionMenuSlotNames = this.columns
+            .filter(x => x.actionMenu)
+            .map(x => x.actionMenu!);
     }
 
     public idFieldNameChanged(

@@ -94,16 +94,23 @@ const metadata: Meta<TableArgs> = {
             experimental. It is not recommended for application use.
         </div>
         <nimble-table :data=${x => dataSets[x.data]} id-field-name=${x => dataSetIdFieldNames[x.data]}>
-            <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
-            <nimble-table-column-text field-name="lastName" placeholder="no value" action-menu>Last Name</nimble-table-column-text>
+            <nimble-table-column-text field-name="firstName" placeholder="no value" action-menu="name-menu">First Name</nimble-table-column-text>
+            <nimble-table-column-text field-name="lastName" placeholder="no value" action-menu="quote-menu">Last Name</nimble-table-column-text>
             <nimble-table-column-text field-name="favoriteColor" placeholder="no value">Favorite Color</nimble-table-column-text>
-            <nimble-table-column-text field-name="quote" placeholder="no value" action-menu>Quote</nimble-table-column-text>
+            <nimble-table-column-text field-name="quote" placeholder="no value" action-menu="quote-menu">Quote</nimble-table-column-text>
 
-            <nimble-menu slot="actionMenu">
+            <nimble-menu slot="quote-menu">
                 <nimble-menu-item>Hello</nimble-menu-item>
                 <nimble-menu-item>World</nimble-menu-item>
                 <nimble-menu-item>Foo</nimble-menu-item>
                 <nimble-menu-item>Bar</nimble-menu-item>
+            </nimble-menu>
+
+            <nimble-menu slot="name-menu">
+                <nimble-menu-item>Edit</nimble-menu-item>
+                <nimble-menu-item>Delete</nimble-menu-item>
+                <nimble-menu-item>Archive</nimble-menu-item>
+                <nimble-menu-item>Duplicate</nimble-menu-item>
             </nimble-menu>
         </nimble-table>
         <style class="code-hide">

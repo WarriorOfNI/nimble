@@ -13,8 +13,11 @@ export abstract class TableColumn<
     @attr({ attribute: 'column-id' })
     public columnId?: string;
 
-    @attr({ attribute: 'action-menu', mode: 'boolean' })
-    public showActionMenu = false;
+    @attr({ attribute: 'action-menu' })
+    public actionMenu?: string;
+
+    @attr({ attribute: 'menu-label' })
+    public menuLabel?: string;
 
     /**
      * The template to use to render the cell content for the column
