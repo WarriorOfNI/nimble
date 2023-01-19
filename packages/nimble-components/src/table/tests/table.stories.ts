@@ -20,19 +20,22 @@ const simpleData = [
         firstName: 'Ralph',
         lastName: 'Wiggum',
         favoriteColor: 'Rainbow',
-        quote: "I'm in danger!"
+        quote: "I'm in danger!",
+        image: 'https://upload.wikimedia.org/wikipedia/en/1/14/Ralph_Wiggum.png'
     },
     {
         firstName: 'Milhouse',
         lastName: 'Van Houten',
         favoriteColor: 'Crimson',
-        quote: "Not only am I not learning, I'm forgetting stuff I used to know!"
+        quote: "Not only am I not learning, I'm forgetting stuff I used to know!",
+        image: 'https://upload.wikimedia.org/wikipedia/en/1/11/Milhouse_Van_Houten.png'
     },
     {
         firstName: 'Ned',
         lastName: 'Flanders',
         favoriteColor: 'Taupe',
-        quote: 'Hi diddly-ho neighbor!'
+        quote: 'Hi diddly-ho neighbor!',
+        image: 'https://upload.wikimedia.org/wikipedia/en/8/84/Ned_Flanders.png'
     }
 ] as const;
 
@@ -97,7 +100,7 @@ const metadata: Meta<TableArgs> = {
             <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
             <nimble-table-column-text field-name="lastName" placeholder="no value">Last Name</nimble-table-column-text>
             <nimble-table-column-text field-name="favoriteColor" placeholder="no value">Favorite Color</nimble-table-column-text>
-            <nimble-table-column-text field-name="quote" placeholder="no value">Quote</nimble-table-column-text>
+            <nimble-table-column-image image-field-name="image" quote-field-name="quote" first-name-field-name="firstName"></nimble-table-column-image>
         </nimble-table>
         <style class="code-hide">
             #usage-warning {

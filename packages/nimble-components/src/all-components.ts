@@ -30,6 +30,7 @@ import './tab';
 import './tab-panel';
 import './table';
 import './table-column/text';
+import './table-column/image';
 import './tabs';
 import './tabs-toolbar';
 import './text-area';
