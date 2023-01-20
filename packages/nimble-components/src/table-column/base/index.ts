@@ -10,7 +10,7 @@ export abstract class TableColumn<
     TColumnConfig extends ColumnConfig = ColumnConfig
 > extends FoundationElement {
     @attr({ attribute: 'fixed-size', converter: nullableNumberConverter })
-    public fixedSize?: number;
+    public fixedSize: number | null = null;
 
     @attr({ attribute: 'grid-size', converter: nullableNumberConverter })
     public gridSize = 1;
@@ -42,7 +42,7 @@ export abstract class TableColumn<
      * This method returns the relevant, static configuration a column requires its cellTemplate
      * to have access to.
      */
-    public abstract getColumnConfig?(): TColumnConfig;
+    public abstract getColumnConfig(): TColumnConfig;
 
     /**
      * The names of the fields from the row's record that correlate to the data that will be in TCellRecord.

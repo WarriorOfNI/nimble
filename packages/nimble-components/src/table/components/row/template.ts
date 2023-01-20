@@ -6,8 +6,8 @@ import type { TableColumn } from '../../../table-column/base';
 
 // prettier-ignore
 export const template = html<TableRow>`
-    <template role="row" style="grid-template-columns: ${x => x.getTemplateColumns()};">
-        ${repeat(x => x.columns, html<TableColumn, TableRow>`
+    <template role="row" style="grid-template-columns: ${x => x.rowGridColumns};">
+        ${repeat(x => x.columns ?? [], html<TableColumn, TableRow>`
             <${DesignSystem.tagFor(TableCell)}
                 class="cell"
                 :cellTemplate="${x => x.cellTemplate}"

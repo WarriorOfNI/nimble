@@ -10,6 +10,7 @@ import {
     TableOptionsResolved as TanStackTableOptionsResolved
 } from '@tanstack/table-core';
 import type { TableColumn } from '../table-column/base';
+import { TableColumnSizeHelper } from './models/table-column-size-helper';
 import { TableValidator } from './models/table-validator';
 import { styles } from './styles';
 import { template } from './template';
@@ -48,10 +49,18 @@ export class Table<
         return this.tableValidator.getValidity();
     }
 
+    /**
+     * @internal
+     */
+    public readonly rowHeader!: Element;
+
     private readonly table: TanStackTable<TData>;
     private options: TanStackTableOptionsResolved<TData>;
     private readonly tableInitialized: boolean = false;
     private readonly tableValidator = new TableValidator();
+    private activeColumnDivider?: number;
+    private currentRowWidth?: number;
+    private gridSizedColumns?: TableColumn[];
 
     public constructor() {
         super();
@@ -100,6 +109,67 @@ export class Table<
 
     public checkValidity(): boolean {
         return this.tableValidator.isValid();
+    }
+
+    public onDividerMouseDown(columnIndex: number): void {
+        this.activeColumnDivider = columnIndex;
+        this.currentRowWidth = this.rowHeader.getBoundingClientRect().width;
+        document.addEventListener('mousemove', this.onDividerMouseMove);
+        document.addEventListener('mouseup', this.onDividerMouseUp);
+        this.setColumnsToFixedSize();
+        console.log(`mousedown: width = ${this.currentRowWidth}, index = ${columnIndex}`);
+    }
+
+    private readonly onDividerMouseMove = (event: Event): void => {
+        const mouseEvent = event as MouseEvent;
+        const deltaX = mouseEvent.movementX;
+        const leftColumn = this.columns[this.activeColumnDivider!]!;
+        if (leftColumn.fixedSize! + deltaX >= (leftColumn.minSize ?? 0)) {
+            leftColumn.fixedSize! += deltaX;
+        }
+
+        const rightColumn = this.columns[this.activeColumnDivider! + 1]!;
+        if (rightColumn.fixedSize! - deltaX >= (rightColumn.minSize ?? 0)) {
+            rightColumn.fixedSize! -= deltaX;
+        }
+    };
+
+    private readonly onDividerMouseUp = (): void => {
+        document.removeEventListener('mousemove', this.onDividerMouseMove);
+        document.removeEventListener('mouseup', this.onDividerMouseUp);
+        this.resetGridSizedColumns();
+    };
+
+    private cacheGridSizedColumns(): void {
+        this.gridSizedColumns = [];
+        for (const column of this.columns) {
+            if (column.fixedSize === null) {
+                this.gridSizedColumns.push(column);
+            }
+        }
+    }
+
+    private setColumnsToFixedSize(): void {
+        this.cacheGridSizedColumns();
+        const totalMagnitude = TableColumnSizeHelper.getTotalColumnMagnitude(this.columns);
+        const totalFixedSize = TableColumnSizeHelper.getTotalColumnFixedWidth(this.columns);
+        for (const column of this.columns) {
+            if (column.fixedSize === null) {
+                column.fixedSize = (column.gridSize / totalMagnitude) * (this.currentRowWidth! - totalFixedSize);
+            }
+        }
+    }
+
+    private resetGridSizedColumns(): void {
+        if (!this.gridSizedColumns) {
+            return;
+        }
+
+        const largestColumnFixedSize = Math.max(...this.gridSizedColumns.map(column => column.fixedSize!)!);
+        for (const column of this.gridSizedColumns) {
+            column.gridSize = column.fixedSize! / largestColumnFixedSize;
+            column.fixedSize = null;
+        }
     }
 
     private trySetData(newData: TData[]): void {

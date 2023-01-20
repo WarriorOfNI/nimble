@@ -1,8 +1,8 @@
-import { observable } from '@microsoft/fast-element';
+import { Notifier, Observable, observable } from '@microsoft/fast-element';
 import { DesignSystem, FoundationElement } from '@microsoft/fast-foundation';
 import { styles } from './styles';
 import { template } from './template';
-import type { TableCellState, TableRecord, TableRowState } from '../../types';
+import type { TableCellState, TableRecord } from '../../types';
 import type { TableColumn } from '../../../table-column/base';
 
 declare global {
@@ -22,7 +22,15 @@ export class TableRow<
     public data?: TData;
 
     @observable
-    public columns: TableColumn[] = [];
+    public columns?: TableColumn[];
+
+    /**
+     * @internal
+     */
+    @observable
+    public rowGridColumns?: string;
+
+    private readonly _columnObservers: Notifier[] = [];
 
     public getCellState(column: TableColumn): TableCellState {
         const fieldNames = column.getRecordFieldNames();
@@ -46,15 +54,29 @@ export class TableRow<
     }
 
     public getTemplateColumns(): string {
-        return this.columns.reduce((accumulator: string, currentValue) => {
+        return this.columns?.reduce((accumulator: string, currentValue) => {
             const gap = accumulator === '' ? '' : ' ';
             if (currentValue.fixedSize) {
                 return `${accumulator}${gap}${currentValue.fixedSize}px`;
             }
 
             return `${accumulator}${gap}${currentValue.gridSize}fr`;
-        }, '');
+        }, '') ?? '';
     }
+
+    protected columnsChanged(): void {
+        this._columnObservers.forEach(observer => observer.unsubscribe({ handleChange: this.handleChange }));
+        for (const column of this.columns ?? []) {
+            const observer = Observable.getNotifier(column);
+            observer.subscribe({ handleChange: this.handleChange });
+            this._columnObservers.push(observer);
+        }
+        this.rowGridColumns = this.getTemplateColumns();
+    }
+
+    private readonly handleChange = (_: TableColumn, __: string): void => {
+        this.rowGridColumns = this.getTemplateColumns();
+    };
 
     private hasValidFieldNames(keys: (string | undefined)[]): keys is string[] {
         return keys.every(key => key !== undefined);

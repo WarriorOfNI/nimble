@@ -1,6 +1,7 @@
 import {
     ElementsFilter,
     html,
+    ref,
     repeat,
     slotted,
     when
@@ -11,6 +12,7 @@ import type { TableRowState } from './types';
 import { TableHeader } from './components/header';
 import { TableRow } from './components/row';
 import { TableColumn } from '../table-column/base';
+import { TableColumnSizeHelper } from './models/table-column-size-helper';
 
 const isTableColumn = (): ElementsFilter => {
     const filter: ElementsFilter = (
@@ -28,12 +30,20 @@ export const template = html<Table>`
     <template role="table">
         <div class="table-container">
             <div role="rowgroup" class="header-container">
-                <div class="header-row" role="row">
-                    ${repeat(x => x.columns, html<TableColumn>`
-                        <${DesignSystem.tagFor(TableHeader)} class="header" style="min-width: ${x => x.minSize}px;>
-                            ${x => x.textContent}
+                <div class="header-row" ${ref('rowHeader')} role="row" style="grid-template-columns: ${x => TableColumnSizeHelper.getTemplateColumns(x.columns)};">
+                    ${repeat(x => x.columns, html<TableColumn, Table>`
+                        <${DesignSystem.tagFor(TableHeader)} class="header" style="min-width: ${x => x.minSize}px;">
+                            ${when((_, c) => c.index > 0, html`
+                                <div class="column-divider left" @mousedown="${(_, c) => (c.parent as Table).onDividerMouseDown(c.index - 1)}"></div>
+                            `)}
+                            <div class="header-content">
+                                ${x => x.textContent}
+                            </div>
+                            ${when((_, c) => c.index < c.parent.columns.length - 1, html`
+                                <div class="column-divider right" @mousedown="${(_, c) => (c.parent as Table).onDividerMouseDown(c.index)}"></div>
+                            `)}
                         </${DesignSystem.tagFor(TableHeader)}>
-                    `)}
+                    `, { positioning: true })}
                 </div>
             </div>
             <div class="table-viewport" role="rowgroup">
@@ -51,3 +61,4 @@ export const template = html<Table>`
         <slot ${slotted({ property: 'columns', filter: isTableColumn() })}></slot>
     </template>
 `;
+
