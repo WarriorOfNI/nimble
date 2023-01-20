@@ -55,7 +55,7 @@ export function afterStarted(Blazor) {
                 columnId: ''
             };
         }
-    })
+    });
 }
 
 window.NimbleBlazor = {

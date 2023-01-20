@@ -13,7 +13,7 @@ export const template = html<TableCell>`
             <${DesignSystem.tagFor(MenuButton)}
                 content-hidden
                 appearance="ghost"
-                @opening="${x => x.onMenuOpening()}"
+                @beforetoggle="${(x, c) => x.onMenuOpening(c.event as CustomEvent)}"
                 @open-change="${(x, c) => x.onMenuOpenChange(c.event)}"
                 part="action-menu"
             >

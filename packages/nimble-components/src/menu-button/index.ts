@@ -10,7 +10,7 @@ import { ButtonAppearance } from '../button/types';
 import type { ToggleButton } from '../toggle-button';
 import { styles } from './styles';
 import { template } from './template';
-import { MenuButtonPosition } from './types';
+import { MenuButtonBeforeToggleEventDetail, MenuButtonPosition } from './types';
 import type { ButtonPattern } from '../patterns/button/types';
 import type { AnchoredRegion } from '../anchored-region';
 
@@ -105,10 +105,8 @@ export class MenuButton extends FoundationElement implements ButtonPattern {
             this.toggleButton.checked = this.open;
         }
 
-        if (this.open) {
-            this.$emit('opening');
-        } else {
-            // Only fire the 'open-change' event here if the menu is changing to being closed. Otherwise,
+        if (!this.open) {
+            // Only fire an event here if the menu is changing to being closed. Otherwise,
             // wait until the menu is actually opened before firing the event.
             this.$emit('open-change');
         }
@@ -132,7 +130,7 @@ export class MenuButton extends FoundationElement implements ButtonPattern {
 
         const focusTarget = e.relatedTarget as HTMLElement;
         if (!this.contains(focusTarget) && !this.menu?.contains(focusTarget)) {
-            this.open = false;
+            this.setOpen(false);
             return false;
         }
 
@@ -140,7 +138,7 @@ export class MenuButton extends FoundationElement implements ButtonPattern {
     }
 
     public toggleButtonCheckedChangeHandler(e: Event): boolean {
-        this.open = this.toggleButton!.checked;
+        this.setOpen(this.toggleButton!.checked);
         // Don't bubble the 'change' event from the toggle button because
         // the menu button has its own 'open-change' event.
         e.stopPropagation();
@@ -151,10 +149,10 @@ export class MenuButton extends FoundationElement implements ButtonPattern {
         switch (e.key) {
             case keyArrowUp:
                 this.focusLastItemWhenOpened = true;
-                this.open = true;
+                this.setOpen(true);
                 return false;
             case keyArrowDown:
-                this.open = true;
+                this.setOpen(true);
                 return false;
             default:
                 return true;
@@ -164,12 +162,26 @@ export class MenuButton extends FoundationElement implements ButtonPattern {
     public menuKeyDownHandler(e: KeyboardEvent): boolean {
         switch (e.key) {
             case keyEscape:
-                this.open = false;
+                this.setOpen(false);
                 this.toggleButton!.focus();
                 return false;
             default:
                 return true;
         }
+    }
+
+    private setOpen(newValue: boolean): void {
+        if (this.open === newValue) {
+            return;
+        }
+
+        const eventDetail: MenuButtonBeforeToggleEventDetail = {
+            oldState: this.open,
+            newState: newValue
+        };
+        this.$emit('beforetoggle', eventDetail);
+
+        this.open = newValue;
     }
 
     private get menu(): HTMLElement | undefined {
@@ -187,7 +199,9 @@ export class MenuButton extends FoundationElement implements ButtonPattern {
             }
 
             if (currentItem?.nodeName === 'SLOT') {
-                currentItem = (currentItem as HTMLSlotElement).assignedNodes()[0] as HTMLElement;
+                currentItem = (
+                    currentItem as HTMLSlotElement
+                ).assignedNodes()[0] as HTMLElement;
             } else {
                 return undefined;
             }
@@ -209,7 +223,7 @@ export class MenuButton extends FoundationElement implements ButtonPattern {
     }
 
     private readonly menuChangeHandler = (): void => {
-        this.open = false;
+        this.setOpen(false);
         this.toggleButton!.focus();
     };
 }

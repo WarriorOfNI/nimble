@@ -8,6 +8,7 @@ import {
 } from '@microsoft/fast-element';
 import { DesignSystem, FoundationElement } from '@microsoft/fast-foundation';
 import type { MenuButton } from '../../../menu-button';
+import type { MenuButtonBeforeToggleEventDetail } from '../../../menu-button/types';
 import type { TableCellState, TableRecord } from '../../types';
 import { styles } from './styles';
 import { template } from './template';
@@ -54,8 +55,12 @@ export class TableCell<
         );
     }
 
-    public onMenuOpening(): void {
-        this.$emit('cell-action-menu-opening');
+    public onMenuOpening(event: CustomEvent): void {
+        const detail = event.detail as MenuButtonBeforeToggleEventDetail;
+
+        if (detail.newState) {
+            this.$emit('cell-action-menu-opening');
+        }
     }
 
     public onMenuOpenChange(event: Event): void {
