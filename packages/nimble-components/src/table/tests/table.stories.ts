@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { html, ref } from '@microsoft/fast-element';
 import type { Meta, StoryObj } from '@storybook/html';
 import { withXD } from 'storybook-addon-xd-designs';
@@ -13,7 +14,6 @@ interface TableArgs {
     validity: undefined;
     checkValidity: undefined;
     tableRef: Table;
-    populateData: (tableRef: Table, data: ExampleDataType) => void;
 }
 
 const simpleData = [
@@ -40,11 +40,37 @@ const simpleData = [
 const simpleDataIdFieldName = 'firstName';
 
 const dataSets = {
-    [ExampleDataType.simpleData]: simpleData
+    [ExampleDataType.simpleData]: simpleData,
+    [ExampleDataType.largeData]: [
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData,
+        ...simpleData
+    ],
 } as const;
 
 const dataSetIdFieldNames = {
-    [ExampleDataType.simpleData]: simpleDataIdFieldName
+    [ExampleDataType.simpleData]: simpleDataIdFieldName,
+    [ExampleDataType.largeData]: null
 } as const;
 
 const overviewText = 'The `nimble-table` is a component that offers a way to render tabular data in a variety of ways in each column.';
@@ -106,12 +132,13 @@ const metadata: Meta<TableArgs> = {
             WARNING - The table is still in development and considered
             experimental. It is not recommended for application use.
         </div>
-        <nimble-button @click="${x => x.populateData(x.tableRef, x.data)}">
-            Load data
-        </nimble-button>
         <nimble-table
             ${ref('tableRef')}
             id-field-name="${x => dataSetIdFieldNames[x.data]}"
+            data-unused="${x => {
+                x.tableRef.setData(dataSets[x.data]);
+                return null;
+            }}"
         >
             <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
             <nimble-table-column-text field-name="lastName" placeholder="no value">Last Name</nimble-table-column-text>
@@ -133,11 +160,12 @@ const metadata: Meta<TableArgs> = {
         data: {
             name: 'setData(data)',
             description: dataDescription,
-            options: [ExampleDataType.simpleData],
+            options: [ExampleDataType.simpleData, ExampleDataType.largeData],
             control: {
                 type: 'radio',
                 labels: {
-                    [ExampleDataType.simpleData]: 'Simple data'
+                    [ExampleDataType.simpleData]: 'Simple data',
+                    [ExampleDataType.largeData]: 'Large data'
                 }
             }
         },
@@ -163,11 +191,6 @@ const metadata: Meta<TableArgs> = {
             table: {
                 disable: true
             }
-        },
-        populateData: {
-            table: {
-                disable: true
-            }
         }
     },
     args: {
@@ -175,10 +198,7 @@ const metadata: Meta<TableArgs> = {
         idFieldName: undefined,
         validity: undefined,
         checkValidity: undefined,
-        tableRef: undefined,
-        populateData: (tableRef, data) => {
-            tableRef.setData(dataSets[data]);
-        }
+        tableRef: undefined
     }
 };
 
