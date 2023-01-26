@@ -56,11 +56,11 @@ export class TableRow<
     public getTemplateColumns(): string {
         return this.columns?.reduce((accumulator: string, currentValue) => {
             const gap = accumulator === '' ? '' : ' ';
-            if (currentValue.fixedSize) {
-                return `${accumulator}${gap}${currentValue.fixedSize}px`;
+            if (currentValue.currentFixedWidth) {
+                return `${accumulator}${gap}${currentValue.currentFixedWidth}px`;
             }
 
-            return `${accumulator}${gap}${currentValue.gridSize}fr`;
+            return `${accumulator}${gap}${currentValue.currentFractionalWidth}fr`;
         }, '') ?? '';
     }
 

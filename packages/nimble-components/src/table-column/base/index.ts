@@ -1,4 +1,4 @@
-import { attr, ElementStyles, nullableNumberConverter, ViewTemplate } from '@microsoft/fast-element';
+import { attr, ElementStyles, nullableNumberConverter, observable, ViewTemplate } from '@microsoft/fast-element';
 import { FoundationElement } from '@microsoft/fast-foundation';
 import type { ColumnConfig, TableCellState, TableRecord } from '../../table/types';
 
@@ -9,17 +9,17 @@ export abstract class TableColumn<
     TCellRecord extends TableRecord = TableRecord,
     TColumnConfig extends ColumnConfig = ColumnConfig
 > extends FoundationElement {
-    @attr({ attribute: 'fixed-size', converter: nullableNumberConverter })
-    public fixedSize: number | null = null;
+    @observable
+    public currentFixedWidth: number | null = null;
 
-    @attr({ attribute: 'grid-size', converter: nullableNumberConverter })
-    public gridSize = 1;
+    @observable
+    public currentFractionalWidth = 1;
 
-    @attr({ attribute: 'min-size' })
-    public minSize?: number;
+    @observable
+    public currentMinWidth?: number;
 
-    @attr({ attribute: 'max-size' })
-    public maxSize?: number;
+    @observable
+    public canResize = false;
 
     /**
      * The template to use to render the cell content for the column

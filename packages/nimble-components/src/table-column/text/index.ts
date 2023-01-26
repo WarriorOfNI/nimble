@@ -1,9 +1,10 @@
 import { attr } from '@microsoft/fast-element';
-import { DesignSystem } from '@microsoft/fast-foundation';
+import { applyMixins, DesignSystem } from '@microsoft/fast-foundation';
 import type { ColumnConfig, StringField } from '../../table/types';
 import { TableColumn } from '../base';
 import { styles } from '../base/styles';
 import { template } from '../base/template';
+import { FractionalWidthColumn } from '../extensions/fractional-width-column';
 import { cellStyles } from './styles';
 import { cellTemplate } from './template';
 
@@ -39,6 +40,10 @@ TableColumnTextColumnConfig
         return [this.fieldName];
     }
 }
+
+applyMixins(TableColumnText, FractionalWidthColumn);
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface TableColumnText extends FractionalWidthColumn {}
 
 const nimbleTableColumnText = TableColumnText.compose({
     baseName: 'table-column-text',

@@ -124,13 +124,13 @@ export class Table<
         const mouseEvent = event as MouseEvent;
         const deltaX = mouseEvent.movementX;
         const leftColumn = this.columns[this.activeColumnDivider!]!;
-        if (leftColumn.fixedSize! + deltaX >= (leftColumn.minSize ?? 0)) {
-            leftColumn.fixedSize! += deltaX;
+        if (leftColumn.currentFixedWidth! + deltaX >= (leftColumn.currentMinWidth ?? 0)) {
+            leftColumn.currentFixedWidth! += deltaX;
         }
 
         const rightColumn = this.columns[this.activeColumnDivider! + 1]!;
-        if (rightColumn.fixedSize! - deltaX >= (rightColumn.minSize ?? 0)) {
-            rightColumn.fixedSize! -= deltaX;
+        if (rightColumn.currentFixedWidth! - deltaX >= (rightColumn.currentMinWidth ?? 0)) {
+            rightColumn.currentFixedWidth! -= deltaX;
         }
     };
 
@@ -143,7 +143,7 @@ export class Table<
     private cacheGridSizedColumns(): void {
         this.gridSizedColumns = [];
         for (const column of this.columns) {
-            if (column.fixedSize === null) {
+            if (column.currentFixedWidth === null) {
                 this.gridSizedColumns.push(column);
             }
         }
@@ -154,8 +154,8 @@ export class Table<
         const totalMagnitude = TableColumnSizeHelper.getTotalColumnMagnitude(this.columns);
         const totalFixedSize = TableColumnSizeHelper.getTotalColumnFixedWidth(this.columns);
         for (const column of this.columns) {
-            if (column.fixedSize === null) {
-                column.fixedSize = (column.gridSize / totalMagnitude) * (this.currentRowWidth! - totalFixedSize);
+            if (column.currentFixedWidth === null) {
+                column.currentFixedWidth = (column.currentFractionalWidth / totalMagnitude) * (this.currentRowWidth! - totalFixedSize);
             }
         }
     }
@@ -165,10 +165,10 @@ export class Table<
             return;
         }
 
-        const largestColumnFixedSize = Math.max(...this.gridSizedColumns.map(column => column.fixedSize!)!);
+        const largestColumnFixedSize = Math.max(...this.gridSizedColumns.map(column => column.currentFixedWidth!)!);
         for (const column of this.gridSizedColumns) {
-            column.gridSize = column.fixedSize! / largestColumnFixedSize;
-            column.fixedSize = null;
+            column.currentFractionalWidth = column.currentFixedWidth! / largestColumnFixedSize;
+            column.currentFixedWidth = null;
         }
     }
 
