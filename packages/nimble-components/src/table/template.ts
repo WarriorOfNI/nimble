@@ -32,7 +32,7 @@ export const template = html<Table>`
             <div role="rowgroup" class="header-container">
                 <div class="header-row" ${ref('rowHeader')} role="row" style="grid-template-columns: ${x => TableColumnSizeHelper.getTemplateColumns(x.columns)};">
                     ${repeat(x => x.columns, html<TableColumn, Table>`
-                        <${DesignSystem.tagFor(TableHeader)} class="header" style="min-width: ${x => x.minSize}px;">
+                        <${DesignSystem.tagFor(TableHeader)} class="header" style="min-width: ${x => x.currentMinWidth}px;">
                             ${when((_, c) => c.index > 0, html`
                                 <div class="column-divider left" @mousedown="${(_, c) => (c.parent as Table).onDividerMouseDown(c.index - 1)}"></div>
                             `)}
