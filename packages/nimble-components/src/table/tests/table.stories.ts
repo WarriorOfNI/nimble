@@ -21,19 +21,18 @@ const simpleData = [
         firstName: 'Ralph',
         lastName: 'Wiggum',
         favoriteColor: 'Rainbow',
-        n: 1
+        age: 12
     },
     {
         firstName: 'Milhouse',
         lastName: 'Van Houten',
         favoriteColor: 'Crimson',
-        n: 2
+        age: 11
     },
     {
         firstName: 'Ned',
         lastName: 'Flanders',
         favoriteColor: 'Taupe',
-        n: 3.4
     }
 ] as const;
 
@@ -127,8 +126,8 @@ const metadata: Meta<TableArgs> = {
         >
             <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
             <nimble-table-column-text field-name="lastName" placeholder="no value">Last Name</nimble-table-column-text>
+            <nimble-table-column-number field-name="age" placeholder="Unknown">Age</nimble-table-column-number>
             <nimble-table-column-text field-name="favoriteColor" placeholder="no value">Favorite Color</nimble-table-column-text>
-            <nimble-table-column-text field-name="n" placeholder="no value">Number</nimble-table-column-text>
         </nimble-table>
         <style class="code-hide">
             #usage-warning {
