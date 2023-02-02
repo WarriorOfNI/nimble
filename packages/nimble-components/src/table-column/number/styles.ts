@@ -13,6 +13,7 @@ export const cellStyles = css`
         overflow: hidden;
         text-align: end;
         text-overflow: ellipsis;
+        width: 100%;
     }
 
     .placeholder {
