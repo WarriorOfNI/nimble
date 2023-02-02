@@ -6,9 +6,9 @@ export const cellTemplate = html<
 TableCellState<TableColumnTextCellRecord, TableColumnTextColumnConfig>
 >`
     <span
-        class="${x => (typeof x.cellRecord !== undefined ? '' : 'placeholder')}"
+        class="${x => (typeof x.cellRecord.value === 'string' ? '' : 'placeholder')}"
     >
-        ${x => (x.cellRecord.value !== undefined
+        ${x => (typeof x.cellRecord.value === 'string'
         ? x.cellRecord.value
         : x.columnConfig.placeholder)}
     </span>
