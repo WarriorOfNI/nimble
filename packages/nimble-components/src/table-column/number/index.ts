@@ -28,7 +28,7 @@ TableColumnNumberColumnConfig
     @attr
     public placeholder?: string;
 
-    @attr
+    @attr({ attribute: 'format-function' })
     public formatFunction?: (data: number) => string;
 
     public readonly cellStyles = cellStyles;

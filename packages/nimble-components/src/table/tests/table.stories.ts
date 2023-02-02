@@ -16,6 +16,8 @@ interface TableArgs {
     updateData: (args: TableArgs) => void;
 }
 
+const formatFunction = (x: number): string => `${x} years`;
+
 const simpleData = [
     {
         firstName: 'Ralph',
@@ -126,7 +128,7 @@ const metadata: Meta<TableArgs> = {
         >
             <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
             <nimble-table-column-text field-name="lastName" placeholder="no value">Last Name</nimble-table-column-text>
-            <nimble-table-column-number field-name="age" placeholder="Unknown">Age</nimble-table-column-number>
+            <nimble-table-column-number field-name="age" placeholder="Unknown" format-function="${() => formatFunction}">Age</nimble-table-column-number>
             <nimble-table-column-text field-name="favoriteColor" placeholder="no value">Favorite Color</nimble-table-column-text>
         </nimble-table>
         <style class="code-hide">
