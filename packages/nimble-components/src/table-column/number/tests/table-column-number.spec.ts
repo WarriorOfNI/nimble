@@ -1,7 +1,7 @@
 import { html } from '@microsoft/fast-element';
 import { DesignSystem } from '@microsoft/fast-foundation';
 import type { Table } from '../../../table';
-import { TableColumnText } from '..';
+import { TableColumnNumber } from '..';
 import { waitForUpdatesAsync } from '../../../testing/async-helpers';
 import { type Fixture, fixture } from '../../../utilities/tests/fixture';
 import type { TableRecord } from '../../../table/types';
@@ -15,23 +15,23 @@ interface SimpleTableRecord extends TableRecord {
     anotherField?: string | null;
 }
 
-const tableColumnText = DesignSystem.tagFor(TableColumnText);
+const tableColumnNumber = DesignSystem.tagFor(TableColumnNumber);
 
 // prettier-ignore
 async function setup(): Promise<Fixture<Table<SimpleTableRecord>>> {
     return fixture<Table<SimpleTableRecord>>(
         html`<nimble-table>
-                <${tableColumnText} field-name="field" placeholder="no value">
+                <${tableColumnNumber} field-name="field" placeholder="no value">
                     Column 1
-                </${tableColumnText}>
-                <${tableColumnText} field-name="noPlaceholder">
+                </${tableColumnNumber}>
+                <${tableColumnNumber} field-name="noPlaceholder">
                     Column 2
-                </${tableColumnText}>
+                </${tableColumnNumber}>
             </nimble-table>`
     );
 }
 
-describe('TableColumnText', () => {
+describe('TableColumnNumber', () => {
     let element: Table<SimpleTableRecord>;
     let connect: () => Promise<void>;
     let disconnect: () => Promise<void>;
@@ -67,7 +67,7 @@ describe('TableColumnText', () => {
         await connect();
         await waitForUpdatesAsync();
 
-        const firstColumn = element.columns[0] as TableColumnText;
+        const firstColumn = element.columns[0] as TableColumnNumber;
         firstColumn.fieldName = 'anotherField';
         await waitForUpdatesAsync();
 
@@ -79,7 +79,7 @@ describe('TableColumnText', () => {
         await connect();
         await waitForUpdatesAsync();
 
-        const firstColumn = element.columns[0] as TableColumnText;
+        const firstColumn = element.columns[0] as TableColumnNumber;
         firstColumn.placeholder = 'different value';
         await waitForUpdatesAsync();
 
@@ -116,7 +116,7 @@ describe('TableColumnText', () => {
         await connect();
         await waitForUpdatesAsync();
 
-        const firstColumn = element.columns[0] as TableColumnText;
+        const firstColumn = element.columns[0] as TableColumnNumber;
         firstColumn.fieldName = undefined;
         element.setData([{ field: 'foo' }]);
         await waitForUpdatesAsync();
@@ -161,7 +161,7 @@ describe('TableColumnText', () => {
                     element.setData([{ field: null }]);
                     await waitForUpdatesAsync();
 
-                    const firstColumn = element.columns[0] as TableColumnText;
+                    const firstColumn = element.columns[0] as TableColumnNumber;
                     firstColumn.placeholder = value.name;
                     await waitForUpdatesAsync();
 
