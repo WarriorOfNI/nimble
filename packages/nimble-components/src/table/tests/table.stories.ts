@@ -21,19 +21,19 @@ const simpleData = [
         firstName: 'Ralph',
         lastName: 'Wiggum',
         favoriteColor: 'Rainbow',
-        quote: "I'm in danger!"
+        n: 1
     },
     {
         firstName: 'Milhouse',
         lastName: 'Van Houten',
         favoriteColor: 'Crimson',
-        quote: "Not only am I not learning, I'm forgetting stuff I used to know!"
+        n: 2
     },
     {
         firstName: 'Ned',
         lastName: 'Flanders',
         favoriteColor: 'Taupe',
-        quote: 'Hi diddly-ho neighbor!'
+        n: 3.4
     }
 ] as const;
 
@@ -47,7 +47,7 @@ for (let i = 0; i < 10000; i++) {
         firstName: firstNames[i % firstNames.length],
         lastName: lastNames[i % lastNames.length],
         favoriteColor: colors[i % colors.length],
-        quote: `I'm number ${i + 1}!`
+        n: i
     });
 }
 
@@ -128,7 +128,7 @@ const metadata: Meta<TableArgs> = {
             <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
             <nimble-table-column-text field-name="lastName" placeholder="no value">Last Name</nimble-table-column-text>
             <nimble-table-column-text field-name="favoriteColor" placeholder="no value">Favorite Color</nimble-table-column-text>
-            <nimble-table-column-text field-name="quote" placeholder="no value">Quote</nimble-table-column-text>
+            <nimble-table-column-text field-name="n" placeholder="no value">Number</nimble-table-column-text>
         </nimble-table>
         <style class="code-hide">
             #usage-warning {
