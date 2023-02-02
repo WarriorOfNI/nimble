@@ -1,24 +1,24 @@
 import { attr } from '@microsoft/fast-element';
 import { DesignSystem } from '@microsoft/fast-foundation';
-import type { TableStringField, TableFieldName } from '../../table/types';
+import type { TableNumberField, TableFieldName } from '../../table/types';
 import { TableColumn } from '../base';
 import { styles } from '../base/styles';
 import { template } from '../base/template';
 import { cellStyles } from './styles';
 import { cellTemplate } from './template';
 
-export type TableColumnTextCellRecord = TableStringField<'value'>;
-export interface TableColumnTextColumnConfig {
+export type TableColumnNumberCellRecord = TableNumberField<'value'>;
+export interface TableColumnNumberColumnConfig {
     placeholder: string;
     formatFunction: (data: number) => string;
 }
 
 /**
- * The table column for displaying strings.
+ * The table column for displaying numbers.
  */
-export class TableColumnText extends TableColumn<
-TableColumnTextCellRecord,
-TableColumnTextColumnConfig
+export class TableColumnNumber extends TableColumn<
+TableColumnNumberCellRecord,
+TableColumnNumberColumnConfig
 > {
     public cellRecordFieldNames = ['value'] as const;
 
@@ -35,8 +35,15 @@ TableColumnTextColumnConfig
 
     public readonly cellTemplate = cellTemplate;
 
-    public getColumnConfig(): TableColumnTextColumnConfig {
-        return { placeholder: this.placeholder ?? '' };
+    private static defaultFormatFunction(x: number): string {
+        return x.toString();
+    }
+
+    public getColumnConfig(): TableColumnNumberColumnConfig {
+        return {
+            placeholder: this.placeholder ?? '',
+            formatFunction: this.formatFunction ?? TableColumnNumber.defaultFormatFunction
+        };
     }
 
     public getDataRecordFieldNames(): (TableFieldName | undefined)[] {
@@ -44,12 +51,12 @@ TableColumnTextColumnConfig
     }
 }
 
-const nimbleTableColumnText = TableColumnText.compose({
-    baseName: 'table-column-text',
+const nimbleTableColumnNumber = TableColumnNumber.compose({
+    baseName: 'table-column-number',
     template,
     styles
 });
 
 DesignSystem.getOrCreate()
     .withPrefix('nimble')
-    .register(nimbleTableColumnText());
+    .register(nimbleTableColumnNumber());

@@ -1,15 +1,15 @@
 import { html } from '@microsoft/fast-element';
-import type { TableColumnTextCellRecord, TableColumnTextColumnConfig } from '.';
+import type { TableColumnNumberCellRecord, TableColumnNumberColumnConfig } from '.';
 import type { TableCellState } from '../../table/types';
 
 export const cellTemplate = html<
-TableCellState<TableColumnTextCellRecord, TableColumnTextColumnConfig>
+TableCellState<TableColumnNumberCellRecord, TableColumnNumberColumnConfig>
 >`
     <span
-        class="${record => (typeof record.cellRecord !== undefined ? '' : 'placeholder')}"
+        class="${x => (typeof x.cellRecord !== undefined ? '' : 'placeholder')}"
     >
-        ${record => (record.cellRecord.value !== undefined
-        ? (record.columnConfig.formatFunction ? record.columnConfig.formatFunction(record.cellRecord.value) : record.cellRecord.value)
-        : (record.columnConfig.placeholder))}
+        ${x => (typeof x.cellRecord.value === 'number'
+        ? x.columnConfig.formatFunction(x.cellRecord.value)
+        : x.columnConfig.placeholder)}
     </span>
 `;

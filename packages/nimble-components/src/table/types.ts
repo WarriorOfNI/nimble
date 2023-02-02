@@ -34,6 +34,10 @@ export type TableStringField<FieldName extends TableFieldName> = {
     [name in FieldName]: string | null | undefined;
 };
 
+export type TableNumberField<FieldName extends TableFieldName> = {
+    [name in FieldName]: number | null | undefined;
+};
+
 export interface TableCellState<
     TCellRecord extends TableCellRecord = TableCellRecord,
     TColumnConfig = unknown
