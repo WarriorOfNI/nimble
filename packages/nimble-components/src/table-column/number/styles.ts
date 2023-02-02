@@ -11,6 +11,7 @@ export const cellStyles = css`
         color: ${bodyFontColor};
         white-space: nowrap;
         overflow: hidden;
+        text-align: end;
         text-overflow: ellipsis;
     }
 
