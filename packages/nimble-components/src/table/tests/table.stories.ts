@@ -48,7 +48,7 @@ for (let i = 0; i < 10000; i++) {
         firstName: firstNames[i % firstNames.length],
         lastName: lastNames[i % lastNames.length],
         favoriteColor: colors[i % colors.length],
-        n: i
+        age: i / 125
     });
 }
 
@@ -128,7 +128,7 @@ const metadata: Meta<TableArgs> = {
         >
             <nimble-table-column-text field-name="firstName" placeholder="no value">First Name</nimble-table-column-text>
             <nimble-table-column-text field-name="lastName" placeholder="no value">Last Name</nimble-table-column-text>
-            <nimble-table-column-number field-name="age" placeholder="Unknown" format-function="${() => formatFunction}">Age</nimble-table-column-number>
+            <nimble-table-column-number field-name="age" placeholder="Unknown">Age</nimble-table-column-number>
             <nimble-table-column-text field-name="favoriteColor" placeholder="no value">Favorite Color</nimble-table-column-text>
         </nimble-table>
         <style class="code-hide">
