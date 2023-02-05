@@ -34,7 +34,6 @@ const simpleData = [
     {
         firstName: 'Ned',
         lastName: 'Flanders',
-        favoriteColor: 'Taupe',
     }
 ] as const;
 

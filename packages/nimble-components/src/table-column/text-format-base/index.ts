@@ -10,7 +10,7 @@ import { cellTemplate } from './template';
 export type TableColumnTextFormatBaseRecord = TableSupportedTypesField<'value'>;
 export interface TableColumnTextFormatBaseColumnConfig {
     placeholder: string;
-    shouldUsePlaceholder(value: TableColumnTextFormatBaseRecord): boolean;
+    shouldUsePlaceholder(value: TableFieldValue): boolean;
     formatFunction(data: TableFieldValue): string;
 }
 
@@ -49,19 +49,19 @@ TableColumnTextFormatBaseColumnConfig
             .register(nimbleTableColumn());
     }
 
-    public static shouldUsePlaceholder(data: TableColumnTextFormatBaseRecord): boolean {
+    public shouldUsePlaceholder(data: TableFieldValue): boolean {
         return data === undefined || data === null;
     }
 
-    public static formatFunction(_data: TableFieldValue): string {
+    public formatFunction(_data: TableFieldValue): string {
         return '';
     }
 
     public getColumnConfig(): TableColumnTextFormatBaseColumnConfig {
         return {
             placeholder: this.placeholder ?? '',
-            shouldUsePlaceholder: TableColumnTextFormatBase.shouldUsePlaceholder,
-            formatFunction: TableColumnTextFormatBase.formatFunction
+            shouldUsePlaceholder: data => this.shouldUsePlaceholder(data),
+            formatFunction: data => this.formatFunction(data)
         };
     }
 

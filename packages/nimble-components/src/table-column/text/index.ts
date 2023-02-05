@@ -1,11 +1,8 @@
-import { attr } from '@microsoft/fast-element';
 import { DesignSystem } from '@microsoft/fast-foundation';
-import type { TableStringField, TableFieldName } from '../../table/types';
-import { TableColumn } from '../base';
-import { styles } from '../base/styles';
+import type { TableFieldValue, TableStringField } from '../../table/types';
+import { TableColumnTextFormatBase, TableColumnTextFormatBaseRecord } from '../text-format-base';
 import { template } from '../base/template';
-import { cellStyles } from './styles';
-import { cellTemplate } from './template';
+import { styles } from '../base/styles';
 
 export type TableColumnTextCellRecord = TableStringField<'value'>;
 export interface TableColumnTextColumnConfig {
@@ -15,32 +12,20 @@ export interface TableColumnTextColumnConfig {
 /**
  * The table column for displaying strings.
  */
-export class TableColumnText extends TableColumn<
-TableColumnTextCellRecord,
-TableColumnTextColumnConfig
-> {
-    public cellRecordFieldNames = ['value'] as const;
-
-    @attr({ attribute: 'field-name' })
-    public fieldName?: string;
-
-    @attr
-    public placeholder?: string;
-
-    public readonly cellStyles = cellStyles;
-
-    public readonly cellTemplate = cellTemplate;
-
-    public getColumnConfig(): TableColumnTextColumnConfig {
-        return { placeholder: this.placeholder ?? '' };
+export class TableColumnText extends TableColumnTextFormatBase {
+    public override shouldUsePlaceholder(data: TableFieldValue): boolean {
+        return typeof data !== 'string';
     }
 
-    public getDataRecordFieldNames(): (TableFieldName | undefined)[] {
-        return [this.fieldName];
+    public override formatFunction(data: string): string {
+        return data;
     }
 }
 
-const nimbleTableColumnText = TableColumnText.compose({
+// TODO: figure out this and static
+// TableColumnTextFormatBase.registerColumn('table-column-text');
+
+const nimbleTableColumn = TableColumnText.compose({
     baseName: 'table-column-text',
     template,
     styles
@@ -48,4 +33,4 @@ const nimbleTableColumnText = TableColumnText.compose({
 
 DesignSystem.getOrCreate()
     .withPrefix('nimble')
-    .register(nimbleTableColumnText());
+    .register(nimbleTableColumn());

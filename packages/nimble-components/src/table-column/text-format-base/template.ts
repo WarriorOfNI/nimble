@@ -6,9 +6,9 @@ export const cellTemplate = html<
 TableCellState<TableColumnTextFormatBaseRecord, TableColumnTextFormatBaseColumnConfig>
 >`
     <span
-        class="${x => (x.columnConfig.shouldUsePlaceholder(x.cellRecord) ? 'placeholder' : '')}"
+        class="${x => (x.columnConfig.shouldUsePlaceholder(x.cellRecord.value) ? 'placeholder' : '')}"
     >
-        ${x => (x.columnConfig.shouldUsePlaceholder(x.cellRecord)
+        ${x => (x.columnConfig.shouldUsePlaceholder(x.cellRecord.value)
         ? x.columnConfig.placeholder
         : x.columnConfig.formatFunction(x.cellRecord.value))}
     </span>
