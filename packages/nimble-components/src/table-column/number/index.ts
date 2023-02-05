@@ -14,6 +14,8 @@ export interface TableColumnNumberColumnConfig {
  * The table column for displaying numbers.
  */
 export class TableColumnNumber extends TableColumnTextFormatBase {
+    public override textAlignEnd = true;
+
     public override shouldUsePlaceholder(data: TableFieldValue): boolean {
         return typeof data !== 'number';
     }

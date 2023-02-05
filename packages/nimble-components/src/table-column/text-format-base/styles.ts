@@ -15,6 +15,10 @@ export const cellStyles = css`
         width: 100%;
     }
 
+    span.text-align-end {
+        text-align: end;
+    }
+
     .placeholder {
         color: ${controlLabelFontColor};
     }

@@ -10,6 +10,7 @@ import { cellTemplate } from './template';
 export type TableColumnTextFormatBaseRecord = TableSupportedTypesField<'value'>;
 export interface TableColumnTextFormatBaseColumnConfig {
     placeholder: string;
+    textAlignEnd: boolean;
     shouldUsePlaceholder(value: TableFieldValue): boolean;
     formatFunction(data: TableFieldValue): string;
 }
@@ -28,6 +29,9 @@ TableColumnTextFormatBaseColumnConfig
 
     @attr
     public placeholder?: string;
+
+    @attr({ attribute: 'text-align-end' })
+    public textAlignEnd = false;
 
     public readonly cellStyles = cellStyles;
 
@@ -60,6 +64,7 @@ TableColumnTextFormatBaseColumnConfig
     public getColumnConfig(): TableColumnTextFormatBaseColumnConfig {
         return {
             placeholder: this.placeholder ?? '',
+            textAlignEnd: this.textAlignEnd,
             shouldUsePlaceholder: data => this.shouldUsePlaceholder(data),
             formatFunction: data => this.formatFunction(data)
         };
