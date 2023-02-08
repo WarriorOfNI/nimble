@@ -1,7 +1,6 @@
-import { attr, ElementStyles, observable, ViewTemplate } from '@microsoft/fast-element';
+import { attr, ElementStyles, ViewTemplate } from '@microsoft/fast-element';
 import { FoundationElement } from '@microsoft/fast-foundation';
-import {
-    ColumnSortDirection,
+import type {
     TableCellRecord,
     TableCellState,
     TableFieldName

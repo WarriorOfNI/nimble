@@ -5,6 +5,7 @@ import type { Table } from '.';
 import { TableHeader } from './components/header';
 import { TableRow } from './components/row';
 import type { TableColumn } from '../table-column/base';
+import { ColumnSortDirection } from './types';
 
 // prettier-ignore
 export const template = html<Table>`
@@ -20,10 +21,11 @@ export const template = html<Table>`
         <div class="table-container">
             <div role="rowgroup" class="header-container" style="margin-right: ${x => x.virtualizer.headerContainerMarginRight}px;">
                 <div class="header-row" role="row">
-                    ${repeat(x => x.columns, html<TableColumn>`
+                    ${repeat(x => x.columns, html<TableColumn, Table>`
                         <${DesignSystem.tagFor(TableHeader)}
                             class="header"
-                            sort-direction="${x => x.sortDirection}"
+                            sort-direction="${(x, c) => c.parent.sortDirectionByColumn.get(x) ?? ColumnSortDirection.none}"
+                            ?hide-sort-indicator="${(x, c) => c.parent.firstSortedColumn !== x}"
                         >
                             ${x => x.textContent}
                         </${DesignSystem.tagFor(TableHeader)}>

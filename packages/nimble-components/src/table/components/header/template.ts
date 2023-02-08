@@ -7,13 +7,13 @@ import { ColumnSortDirection } from '../../types';
 
 // prettier-ignore
 export const template = html<TableHeader>`
-    <template role="columnheader">
+    <template role="columnheader" aria-sort="${x => x.ariaSort}">
         <slot></slot>
         <span class="sort-indicator">
-            ${when(x => x.sortDirection === ColumnSortDirection.ascending, html`
+            ${when(x => !x.hideSortIndicator && x.sortDirection === ColumnSortDirection.ascending, html`
                 <${DesignSystem.tagFor(IconArrowExpanderDown)}></${DesignSystem.tagFor(IconArrowExpanderDown)}>
             `)}
-            ${when(x => x.sortDirection === ColumnSortDirection.descending, html`
+            ${when(x => !x.hideSortIndicator && x.sortDirection === ColumnSortDirection.descending, html`
                 <${DesignSystem.tagFor(IconArrowExpanderUp)}></${DesignSystem.tagFor(IconArrowExpanderUp)}>
             `)}
         </span>

@@ -15,9 +15,8 @@ import { TableColumn } from '../table-column/base';
 import { TableValidator } from './models/table-validator';
 import { styles } from './styles';
 import { template } from './template';
-import { ColumnSortDirection, TableRecord, TableRowState, TableValidity } from './types';
+import { ColumnSortDirection, TableColumnSortState, TableRecord, TableRowState, TableValidity } from './types';
 import { Virtualizer } from './models/virtualizer';
-import type { TableColumnText } from '../table-column/text';
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -40,6 +39,12 @@ export class Table<
     @observable
     public tableData: TableRowState<TData>[] = [];
 
+    /**
+     * @internal
+     */
+    @observable
+    public sortDirectionByColumn = new Map<TableColumn, ColumnSortDirection>();
+
     @observable
     public columns: TableColumn[] = [];
 
@@ -61,6 +66,9 @@ export class Table<
     @observable
     public childItems: Element[] = [];
 
+    @observable
+    public firstSortedColumn?: TableColumn = undefined;
+
     /**
      * @internal
      */
@@ -69,6 +77,7 @@ export class Table<
     private readonly table: TanStackTable<TData>;
     private options: TanStackTableOptionsResolved<TData>;
     private readonly tableValidator = new TableValidator();
+    private sortState: TableColumnSortState[] = [];
 
     public constructor() {
         super();
@@ -120,12 +129,15 @@ export class Table<
      *  - is the sort state reflected onto a column somehow? is it settable from a column?
      *  - we probably need to introduce the concept of hidden columns.
      */
-    public setSortState(sortState: { columnId: string, direction: ColumnSortDirection }[]): void {
-        const sortState2: TanStackSortingState = [];
-        this.columns.forEach(x => {
-            x.sortDirection = ColumnSortDirection.none;
+    public setSortState(sortState: TableColumnSortState[]): void {
+        this.sortState = sortState.map(state => {
+            return { ...state };
         });
 
+        const updatedMap = new Map<TableColumn, ColumnSortDirection>();
+        this.firstSortedColumn = undefined;
+
+        const tanStackSortingState: TanStackSortingState = [];
         for (const sortEntry of sortState) {
             if (sortEntry.direction === ColumnSortDirection.none) {
                 continue;
@@ -136,6 +148,11 @@ export class Table<
                 continue;
             }
 
+            if (!this.firstSortedColumn) {
+                this.firstSortedColumn = column;
+            }
+            updatedMap.set(column, sortEntry.direction);
+
             const sortField = column.dataFieldName ?? column.getDefaultDataFieldName();
             if (typeof sortField !== 'string') {
                 continue;
@@ -143,18 +160,21 @@ export class Table<
 
             this.options.columns.find(x => x.id === sortField);
 
-            column.sortDirection = sortEntry.direction;
-            sortState2.push({
+            tanStackSortingState.push({
                 id: sortField,
                 desc: sortEntry.direction === ColumnSortDirection.descending
             });
         }
 
-        this.table.setSorting(sortState2);
+        this.sortDirectionByColumn = updatedMap;
+
+        this.table.setSorting(tanStackSortingState);
         this.refreshRows();
     }
 
-    // public getSortState(): 
+    public getSortState(): TableColumnSortState[] {
+        return this.sortState;
+    }
 
     public checkValidity(): boolean {
         return this.tableValidator.isValid();
