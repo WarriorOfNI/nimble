@@ -38,6 +38,10 @@ TableColumnTextColumnConfig
     public getDataRecordFieldNames(): (TableFieldName | undefined)[] {
         return [this.fieldName];
     }
+
+    public getDefaultDataFieldName(): TableFieldName | undefined {
+        return this.fieldName;
+    }
 }
 
 const nimbleTableColumnText = TableColumnText.compose({

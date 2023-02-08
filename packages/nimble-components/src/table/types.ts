@@ -54,3 +54,10 @@ export interface TableRowState<TData extends TableRecord = TableRecord> {
     record: TData;
     id: string;
 }
+
+export const ColumnSortDirection = {
+    none: undefined,
+    ascending: 'ascending',
+    descending: 'descending'
+} as const;
+export type ColumnSortDirection = (typeof ColumnSortDirection)[keyof typeof ColumnSortDirection];

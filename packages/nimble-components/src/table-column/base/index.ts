@@ -1,6 +1,7 @@
-import { attr, ElementStyles, ViewTemplate } from '@microsoft/fast-element';
+import { attr, ElementStyles, observable, ViewTemplate } from '@microsoft/fast-element';
 import { FoundationElement } from '@microsoft/fast-foundation';
-import type {
+import {
+    ColumnSortDirection,
     TableCellRecord,
     TableCellState,
     TableFieldName
@@ -15,6 +16,12 @@ export abstract class TableColumn<
 > extends FoundationElement {
     @attr({ attribute: 'column-id' })
     public columnId?: string;
+
+    @attr({ attribute: 'data-field-name' })
+    public dataFieldName?: string;
+
+    // @observable
+    // public sortDirection: ColumnSortDirection = ColumnSortDirection.none;
 
     /**
      * The template to use to render the cell content for the column
@@ -44,4 +51,6 @@ export abstract class TableColumn<
      * This array is parallel with the field names specified by `cellRecordFieldNames`.
      */
     public abstract getDataRecordFieldNames(): (TableFieldName | undefined)[];
+
+    public abstract getDefaultDataFieldName(): TableFieldName | undefined;
 }

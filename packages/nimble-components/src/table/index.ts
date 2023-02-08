@@ -7,14 +7,17 @@ import {
     Table as TanStackTable,
     createTable as tanStackCreateTable,
     getCoreRowModel as tanStackGetCoreRowModel,
-    TableOptionsResolved as TanStackTableOptionsResolved
+    getSortedRowModel as tanStackGetSortedRowModel,
+    TableOptionsResolved as TanStackTableOptionsResolved,
+    SortingState as TanStackSortingState
 } from '@tanstack/table-core';
 import { TableColumn } from '../table-column/base';
 import { TableValidator } from './models/table-validator';
 import { styles } from './styles';
 import { template } from './template';
-import type { TableRecord, TableRowState, TableValidity } from './types';
+import { ColumnSortDirection, TableRecord, TableRowState, TableValidity } from './types';
 import { Virtualizer } from './models/virtualizer';
+import type { TableColumnText } from '../table-column/text';
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -73,18 +76,15 @@ export class Table<
             data: [],
             onStateChange: (_: TanStackUpdater<TanStackTableState>) => {},
             getCoreRowModel: tanStackGetCoreRowModel(),
+            getSortedRowModel: tanStackGetSortedRowModel(),
             columns: [],
             state: {},
+            enableSorting: true,
             renderFallbackValue: null,
             autoResetAll: false
         };
         this.table = tanStackCreateTable(this.options);
         this.virtualizer = new Virtualizer(this);
-    }
-
-    public setData(newData: readonly TData[]): void {
-        this.generateTanStackColumns(newData);
-        this.setTableData(newData);
     }
 
     public override connectedCallback(): void {
@@ -96,6 +96,65 @@ export class Table<
     public override disconnectedCallback(): void {
         this.virtualizer.disconnectedCallback();
     }
+
+    public setData(newData: readonly TData[]): void {
+        this.generateTanStackColumns(newData);
+        this.setTableData(newData);
+    }
+
+    /**
+     * Open questions:
+     * 
+     * Visual design:
+     *  - need correct arrow icons
+     *  - is the space for the sort icon always reserved, or does it collapse when the column isn't sorted? or, when it isn't sortable?
+     * 
+     * UX design:
+     *  - confirm that only the first column shows the sort state
+     * 
+     * API design:
+     *  - is this a function on the table? or an property?
+     *  - what is the validation story?
+     *  - can you query the sort state?
+     *  - events?
+     *  - is the sort state reflected onto a column somehow? is it settable from a column?
+     *  - we probably need to introduce the concept of hidden columns.
+     */
+    public setSortState(sortState: { columnId: string, direction: ColumnSortDirection }[]): void {
+        const sortState2: TanStackSortingState = [];
+        this.columns.forEach(x => {
+            x.sortDirection = ColumnSortDirection.none;
+        });
+
+        for (const sortEntry of sortState) {
+            if (sortEntry.direction === ColumnSortDirection.none) {
+                continue;
+            }
+
+            const column = this.columns.find(c => c.columnId === sortEntry.columnId);
+            if (!column) {
+                continue;
+            }
+
+            const sortField = column.dataFieldName ?? column.getDefaultDataFieldName();
+            if (typeof sortField !== 'string') {
+                continue;
+            }
+
+            this.options.columns.find(x => x.id === sortField);
+
+            column.sortDirection = sortEntry.direction;
+            sortState2.push({
+                id: sortField,
+                desc: sortEntry.direction === ColumnSortDirection.descending
+            });
+        }
+
+        this.table.setSorting(sortState2);
+        this.refreshRows();
+    }
+
+    // public getSortState(): 
 
     public checkValidity(): boolean {
         return this.tableValidator.isValid();
