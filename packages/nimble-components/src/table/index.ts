@@ -15,7 +15,7 @@ import { TableColumn } from '../table-column/base';
 import { TableValidator } from './models/table-validator';
 import { styles } from './styles';
 import { template } from './template';
-import { ColumnSortDirection, TableColumnSortState, TableRecord, TableRowState, TableValidity } from './types';
+import { ColumnSortDirection, TableRecord, TableRowState, TableValidity } from './types';
 import { Virtualizer } from './models/virtualizer';
 
 declare global {
@@ -63,9 +63,6 @@ export class Table<
      */
     public readonly viewport!: HTMLElement;
 
-    @observable
-    public firstSortedColumn?: TableColumn = undefined;
-
     /**
      * @internal
      */
@@ -75,7 +72,6 @@ export class Table<
     private options: TanStackTableOptionsResolved<TData>;
     private readonly tableValidator = new TableValidator();
     private notifiers: Notifier[] = [];
-    private sortState: TableColumnSortState[] = [];
 
     public constructor() {
         super();
@@ -115,6 +111,8 @@ export class Table<
         if (source instanceof TableColumn) {
             if (args === 'columnId') {
                 this.validateColumnIds();
+            } else if (args === 'sortOrder' || args === 'sortDirection' || args === 'dataFieldName' || args === 'defaultDataFieldName') {
+                this.updateSortState();
             }
         }
     }
@@ -122,6 +120,30 @@ export class Table<
     public setData(newData: readonly TData[]): void {
         this.generateTanStackColumns(newData);
         this.setTableData(newData);
+    }
+
+    private updateSortState(): void {
+        const tanStackSortingState: TanStackSortingState = [];
+        const sortedColumns = this.columns
+            .filter(x => x.sortOrder !== null && x.sortDirection !== ColumnSortDirection.none)
+            .sort((x, y) => (x.sortOrder! - y.sortOrder!));
+
+        for (const column of sortedColumns) {
+            const sortField = column.dataFieldName ?? column.defaultDataFieldName;
+            if (typeof sortField !== 'string') {
+                continue;
+            }
+
+            this.options.columns.find(x => x.id === sortField);
+
+            tanStackSortingState.push({
+                id: sortField,
+                desc: column.sortDirection === ColumnSortDirection.descending
+            });
+        }
+
+        this.table.setSorting(tanStackSortingState);
+        this.refreshRows();
     }
 
     /**
@@ -142,52 +164,52 @@ export class Table<
      *  - is the sort state reflected onto a column somehow? is it settable from a column?
      *  - we probably need to introduce the concept of hidden columns.
      */
-    public setSortState(sortState: TableColumnSortState[]): void {
-        this.sortState = sortState.map(state => {
-            return { ...state };
-        });
+    // public setSortState(sortState: TableColumnSortState[]): void {
+    //     this.sortState = sortState.map(state => {
+    //         return { ...state };
+    //     });
 
-        const updatedMap = new Map<TableColumn, ColumnSortDirection>();
-        this.firstSortedColumn = undefined;
+    //     const updatedMap = new Map<TableColumn, ColumnSortDirection>();
+    //     this.firstSortedColumn = undefined;
 
-        const tanStackSortingState: TanStackSortingState = [];
-        for (const sortEntry of sortState) {
-            if (sortEntry.direction === ColumnSortDirection.none) {
-                continue;
-            }
+    //     const tanStackSortingState: TanStackSortingState = [];
+    //     for (const sortEntry of sortState) {
+    //         if (sortEntry.direction === ColumnSortDirection.none) {
+    //             continue;
+    //         }
 
-            const column = this.columns.find(c => c.columnId === sortEntry.columnId);
-            if (!column) {
-                continue;
-            }
+    //         const column = this.columns.find(c => c.columnId === sortEntry.columnId);
+    //         if (!column) {
+    //             continue;
+    //         }
 
-            if (!this.firstSortedColumn) {
-                this.firstSortedColumn = column;
-            }
-            updatedMap.set(column, sortEntry.direction);
+    //         if (!this.firstSortedColumn) {
+    //             this.firstSortedColumn = column;
+    //         }
+    //         updatedMap.set(column, sortEntry.direction);
 
-            const sortField = column.dataFieldName ?? column.getDefaultDataFieldName();
-            if (typeof sortField !== 'string') {
-                continue;
-            }
+    //         const sortField = column.dataFieldName ?? column.getDefaultDataFieldName();
+    //         if (typeof sortField !== 'string') {
+    //             continue;
+    //         }
 
-            this.options.columns.find(x => x.id === sortField);
+    //         this.options.columns.find(x => x.id === sortField);
 
-            tanStackSortingState.push({
-                id: sortField,
-                desc: sortEntry.direction === ColumnSortDirection.descending
-            });
-        }
+    //         tanStackSortingState.push({
+    //             id: sortField,
+    //             desc: sortEntry.direction === ColumnSortDirection.descending
+    //         });
+    //     }
 
-        this.sortDirectionByColumn = updatedMap;
+    //     this.sortDirectionByColumn = updatedMap;
 
-        this.table.setSorting(tanStackSortingState);
-        this.refreshRows();
-    }
+    //     this.table.setSorting(tanStackSortingState);
+    //     this.refreshRows();
+    // }
 
-    public getSortState(): TableColumnSortState[] {
-        return this.sortState;
-    }
+    // public getSortState(): TableColumnSortState[] {
+    //     return this.sortState;
+    // }
 
     public checkValidity(): boolean {
         return this.tableValidator.isValid();

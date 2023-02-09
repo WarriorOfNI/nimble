@@ -5,7 +5,6 @@ import type { Table } from '.';
 import { TableHeader } from './components/header';
 import { TableRow } from './components/row';
 import { TableColumn } from '../table-column/base';
-import { ColumnSortDirection } from './types';
 
 const isTableColumn = (): ElementsFilter => {
     const filter: ElementsFilter = (
@@ -27,8 +26,8 @@ export const template = html<Table>`
                     ${repeat(x => x.columns, html<TableColumn, Table>`
                         <${DesignSystem.tagFor(TableHeader)}
                             class="header"
-                            sort-direction="${(x, c) => c.parent.sortDirectionByColumn.get(x) ?? ColumnSortDirection.none}"
-                            ?hide-sort-indicator="${(x, c) => c.parent.firstSortedColumn !== x}"
+                            sort-direction="${x => x.sortDirection}"
+                            ?hide-sort-indicator="${x => x.sortOrder !== 0}"
                         >
                             ${x => x.textContent}
                         </${DesignSystem.tagFor(TableHeader)}>

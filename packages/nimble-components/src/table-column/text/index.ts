@@ -1,4 +1,4 @@
-import { attr } from '@microsoft/fast-element';
+import { attr, observable, volatile } from '@microsoft/fast-element';
 import { DesignSystem } from '@microsoft/fast-foundation';
 import type { TableStringField, TableFieldName } from '../../table/types';
 import { TableColumn } from '../base';
@@ -39,7 +39,7 @@ TableColumnTextColumnConfig
         return [this.fieldName];
     }
 
-    public getDefaultDataFieldName(): TableFieldName | undefined {
+    public get defaultDataFieldName(): TableFieldName | undefined {
         return this.fieldName;
     }
 }

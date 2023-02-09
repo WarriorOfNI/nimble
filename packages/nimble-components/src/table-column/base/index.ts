@@ -1,6 +1,7 @@
-import { attr, ElementStyles, ViewTemplate } from '@microsoft/fast-element';
+import { attr, ElementStyles, nullableNumberConverter, observable, ViewTemplate, volatile } from '@microsoft/fast-element';
 import { FoundationElement } from '@microsoft/fast-foundation';
-import type {
+import {
+    ColumnSortDirection,
     TableCellRecord,
     TableCellState,
     TableFieldName
@@ -21,6 +22,12 @@ export abstract class TableColumn<
 
     // @observable
     // public sortDirection: ColumnSortDirection = ColumnSortDirection.none;
+
+    @attr({ attribute: 'sort-order', converter: nullableNumberConverter })
+    public sortOrder: number | null = null;
+
+    @attr({ attribute: 'sort-direction' })
+    public sortDirection: ColumnSortDirection = ColumnSortDirection.none;
 
     /**
      * The template to use to render the cell content for the column
@@ -51,5 +58,6 @@ export abstract class TableColumn<
      */
     public abstract getDataRecordFieldNames(): (TableFieldName | undefined)[];
 
-    public abstract getDefaultDataFieldName(): TableFieldName | undefined;
+    // @volatile
+    public abstract get defaultDataFieldName(): TableFieldName | undefined;
 }

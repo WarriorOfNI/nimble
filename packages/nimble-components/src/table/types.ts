@@ -62,7 +62,3 @@ export const ColumnSortDirection = {
 } as const;
 export type ColumnSortDirection = (typeof ColumnSortDirection)[keyof typeof ColumnSortDirection];
 
-export interface TableColumnSortState {
-    columnId: string;
-    direction: ColumnSortDirection;
-}
