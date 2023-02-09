@@ -1,4 +1,4 @@
-import { attr, observable } from '@microsoft/fast-element';
+import { attr, Notifier, Observable, observable } from '@microsoft/fast-element';
 import { DesignSystem, FoundationElement } from '@microsoft/fast-foundation';
 import {
     ColumnDef as TanStackColumnDef,
@@ -64,9 +64,6 @@ export class Table<
     public readonly viewport!: HTMLElement;
 
     @observable
-    public childItems: Element[] = [];
-
-    @observable
     public firstSortedColumn?: TableColumn = undefined;
 
     /**
@@ -77,6 +74,7 @@ export class Table<
     private readonly table: TanStackTable<TData>;
     private options: TanStackTableOptionsResolved<TData>;
     private readonly tableValidator = new TableValidator();
+    private notifiers: Notifier[] = [];
     private sortState: TableColumnSortState[] = [];
 
     public constructor() {
@@ -99,11 +97,26 @@ export class Table<
     public override connectedCallback(): void {
         super.connectedCallback();
         this.virtualizer.connectedCallback();
+        this.observeColumns();
         this.validateColumnIds();
     }
 
     public override disconnectedCallback(): void {
         this.virtualizer.disconnectedCallback();
+        this.removeColumnObservers();
+    }
+
+    /**
+     * @internal
+     */
+    // 'handleChange' is an API exposed by FAST that we need to implement. Disable lint rules caused by its signature.
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+    public handleChange(source: any, args: any): void {
+        if (source instanceof TableColumn) {
+            if (args === 'columnId') {
+                this.validateColumnIds();
+            }
+        }
     }
 
     public setData(newData: readonly TData[]): void {
@@ -197,15 +210,24 @@ export class Table<
             return;
         }
 
+        this.observeColumns();
         this.validateColumnIds();
     }
 
-    private childItemsChanged(
-        _prev: undefined | Element[],
-        next: Element[]
-    ): void {
-        this.columns = next
-            .filter((x): x is TableColumn => x instanceof TableColumn);
+    private removeColumnObservers(): void {
+        this.notifiers.forEach(notifier => {
+            notifier.unsubscribe(this);
+        });
+        this.notifiers = [];
+    }
+
+    private observeColumns(): void {
+        this.removeColumnObservers();
+
+        for (const column of this.columns) {
+            const notifier = Observable.getNotifier(column);
+            notifier.subscribe(this);
+        }
     }
 
     private validateColumnIds(): void {
