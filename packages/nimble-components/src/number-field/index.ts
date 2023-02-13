@@ -40,6 +40,12 @@ export class NumberField extends FoundationNumberField implements ErrorPattern {
     @attr({ attribute: 'error-visible', mode: 'boolean' })
     public errorVisible = false;
 
+    @attr({ attribute: 'increment-button-label' })
+    public incrementButtonLabel?: string;
+
+    @attr({ attribute: 'decrement-button-label' })
+    public decrementButtonLabel?: string;
+
     public override connectedCallback(): void {
         super.connectedCallback();
 
@@ -64,28 +70,30 @@ const nimbleNumberField = NumberField.compose<NumberFieldOptions>({
     shadowOptions: {
         delegatesFocus: true
     },
-    stepDownGlyph: html`
+    stepDownGlyph: html<NumberField>`
         <${DesignSystem.tagFor(Button)}
             class="step-up-down-button"
             appearance="ghost"
             content-hidden
             tabindex="-1"
+            title="${x => x.decrementButtonLabel}"
         >
-            "Decrement"
+            ${x => x.decrementButtonLabel}
             <${DesignSystem.tagFor(IconMinusWide)}
                 slot="start"
             >
             </${DesignSystem.tagFor(IconMinusWide)}>
         </${DesignSystem.tagFor(Button)}>
     `,
-    stepUpGlyph: html`
+    stepUpGlyph: html<NumberField>`
         <${DesignSystem.tagFor(Button)}
             class="step-up-down-button"
             appearance="ghost"
             content-hidden
             tabindex="-1"
+            title="${x => x.incrementButtonLabel}"
         >
-            "Increment"
+            ${x => x.incrementButtonLabel}
             <${DesignSystem.tagFor(IconAdd)}
                 slot="start">
             </${DesignSystem.tagFor(IconAdd)}>

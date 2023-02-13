@@ -15,6 +15,8 @@ interface NumberFieldArgs {
     disabled: boolean;
     errorVisible: boolean;
     errorText: string;
+    incrementButtonLabel: string;
+    decrementButtonLabel: string;
 }
 
 const metadata: Meta<NumberFieldArgs> = {
@@ -46,6 +48,8 @@ const metadata: Meta<NumberFieldArgs> = {
             ?disabled="${x => x.disabled}"
             ?error-visible="${x => x.errorVisible}"
             error-text="${x => x.errorText}"
+            increment-button-label="${x => x.incrementButtonLabel}"
+            decrement-button-label="${x => x.decrementButtonLabel}"
         >
             ${x => x.label}
         </nimble-number-field>
@@ -60,6 +64,14 @@ const metadata: Meta<NumberFieldArgs> = {
         },
         errorVisible: {
             name: 'error-visible'
+        },
+        incrementButtonLabel: {
+            name: 'increment-button-label',
+            description: 'Set to a localized label (e.g. `"Increment"`) for the increment button. This provides an accessible name for assistive technologies.'
+        },
+        decrementButtonLabel: {
+            name: 'decrement-button-label',
+            description: 'Set to a localized label (e.g. `"Decrement"`) for the decrement button. This provides an accessible name for assistive technologies.'
         }
     },
     args: {
@@ -71,7 +83,9 @@ const metadata: Meta<NumberFieldArgs> = {
         appearance: NumberFieldAppearance.underline,
         disabled: false,
         errorVisible: false,
-        errorText: 'Value is invalid'
+        errorText: 'Value is invalid',
+        incrementButtonLabel: 'Increment',
+        decrementButtonLabel: 'Decrement'
     }
 };
 
